@@ -51,7 +51,7 @@ public class DeleteServer extends ListenerAdapter {
                         .setMinLength(32)
                         .build();
                 TextInput email = TextInput.create("deletion_email", "E-Mail", TextInputStyle.SHORT)
-                        .setPlaceholder("Enter your E-Mail of your Vultron Studios Hosting account")
+                        .setPlaceholder("Enter your E-Mail of your ELIZON. account")
                         .setRequired(true)
                         .setMinLength(1)
                         .build();
@@ -60,7 +60,15 @@ public class DeleteServer extends ListenerAdapter {
                         .build();
                 event.replyModal(modal).queue();
             } else {
-                event.reply("You don't have a Vultron Studios Hosting account. Please register first!").setEphemeral(true).queue();
+                EmbedBuilder builder = new EmbedBuilder();
+                builder.setColor(Color.cyan);
+                builder.setAuthor("ELIZON.");
+                builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+                builder.setDescription(
+                        "You don't have a ELIZON. account. Please register first!");
+                event.replyEmbeds(builder.build())
+                        .setEphemeral(true)
+                        .queue();
             }
         }
     }
@@ -76,7 +84,9 @@ public class DeleteServer extends ListenerAdapter {
             TextChannel channel = guild.getTextChannelById(new Hooks().fromFile("vultronGuildCloseChannelID"));
             EmbedBuilder builder = new EmbedBuilder();
             builder.setTitle("Server deletion survey");
-            builder.setColor(Color.BLACK);
+            builder.setColor(Color.cyan);
+            builder.setAuthor("ELIZON.");
+            builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
             builder.addField("Deletion reason", event.getValue("deletion_reason").getAsString(), true);
             builder.addField("Feedback", event.getValue("deletion_feedback").getAsString(), true);
             assert channel != null;
@@ -85,7 +95,13 @@ public class DeleteServer extends ListenerAdapter {
             ids.put(event.getInteraction().getUser().getIdLong(),  event.getValue("deletion_serverid").getAsString());
             emails.put(event.getInteraction().getUser().getIdLong(),  event.getValue("deletion_email").getAsString());
 
-            event.reply("Please confirm your decision. Your server and subdomain (if given) will be **deleted immediately and permanently removed with all data**.")
+            EmbedBuilder b = new EmbedBuilder();
+            b.setColor(Color.cyan);
+            b.setAuthor("ELIZON.");
+            b.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+            b.setDescription(
+                    "Please confirm your decision. Your server and subdomain (if given) will be deleted immediately and permanently removed with all data.");
+            event.replyEmbeds(b.build())
                     .setEphemeral(true)
                     .addActionRow(Button.danger("deletion_delete", "Confirm deletion"))
                     .queue();

@@ -9,7 +9,6 @@ import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 
 import javax.security.auth.login.LoginException;
-import java.io.IOException;
 
 public class Main {
 
@@ -27,13 +26,14 @@ public class Main {
         if(!new Hooks().getFileBuilder().getYaml().isSet("discordBotToken")) new Hooks().toFile("discordBotToken", "YourDiscordBotTokenComesHere");
         if(!new Hooks().getFileBuilder().getYaml().isSet("cloudflareEmail")) new Hooks().toFile("cloudflareEmail", "you@example.net");
         if(!new Hooks().getFileBuilder().getYaml().isSet("cloudflareKey")) new Hooks().toFile("cloudflareKey", "cloudflareAccessToken");
+        if(!new Hooks().getFileBuilder().getYaml().isSet("thumbnailURL")) new Hooks().toFile("thumbnailURL", "thumbnailURL");
         if(!new Hooks().getFileBuilder().getYaml().isSet("cloudflareZoneID")) new Hooks().toFile("cloudflareZoneID", "cloudflareZoneID");
         if(!new Hooks().getFileBuilder().getYaml().isSet("vultronGuildCloseChannelID")) new Hooks().toFile("vultronGuildCloseChannelID", "0123456789");
         if(!new Hooks().getFileBuilder().getYaml().isSet("vultronGuildCloseAccountChannelID")) new Hooks().toFile("vultronGuildCloseAccountChannelID", "0123456789");
 
         JDABuilder jdaBuilder = JDABuilder.createDefault(new Hooks().fromFile("discordBotToken"));
         jdaBuilder.enableIntents(GatewayIntent.DIRECT_MESSAGES, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_MEMBERS, GatewayIntent.MESSAGE_CONTENT, GatewayIntent.GUILD_PRESENCES);
-        jdaBuilder.setActivity(Activity.watching("Vultron Studios"));
+        jdaBuilder.setActivity(Activity.watching("ELIZON."));
         jdaBuilder.setStatus(OnlineStatus.ONLINE);
         jda = jdaBuilder.build();
         jda.addEventListener(new CreateAccount());
@@ -46,6 +46,14 @@ public class Main {
         jda.addEventListener(new Abuse());
         jda.addEventListener(new DeleteServer());
         jda.addEventListener(new VerifyCode());
+
+        jda.retrieveCommands().queue(commands -> {
+            commands.forEach(command -> {
+                if(command.getName().equals("privacypolicy")) {
+                    jda.deleteCommandById(command.getId()).queue();
+                }
+            });
+        });
 
         jda.upsertCommand("createaccount", "Create a hosting account").queue();
         jda.upsertCommand("support", "Get the support link").queue();

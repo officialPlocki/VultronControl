@@ -69,7 +69,9 @@ public class DeleteAccount extends ListenerAdapter {
                     TextChannel channel = guild.getTextChannelById(new Hooks().fromFile("vultronGuildCloseAccountChannelID"));
                     EmbedBuilder builder = new EmbedBuilder();
                     builder.setTitle("Account deletion survey");
-                    builder.setColor(Color.BLACK);
+                    builder.setColor(Color.cyan);
+                    builder.setAuthor("ELIZON.");
+                    builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
                     builder.addField("Deletion reason", event.getValue("accdel_reason").getAsString(), true);
                     builder.addField("Feedback", event.getValue("accdel_feedback").getAsString(), true);
                     assert channel != null;
@@ -77,10 +79,15 @@ public class DeleteAccount extends ListenerAdapter {
 
                     emails.put(event.getInteraction().getUser().getIdLong(), event.getValue("accdel_email").getAsString());
 
-                    event.reply("We're sorry to hear that you want to delete your account.\n" +
-                                    "Your Vultron Studios Hosting account will be deleted after confirmation.\n" +
+                    EmbedBuilder b = new EmbedBuilder();
+                    b.setColor(Color.cyan);
+                    b.setAuthor("ELIZON.");
+                    b.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+                    b.setDescription(
+                            "We're sorry to hear that you want to delete your account.\n" +
+                                    "Your ELIZON. account will be deleted after confirmation.\n" +
                                     "You can create a new account at any time.\n" +
-                                    "According to our privacy policy (https://vultronstudios.net/legal) your data will be deleted.\n" +
+                                    "Your data will be deleted.\n" +
                                     "However, data may only be deleted at a later point in time if they are subject to a retention obligation.\n" +
                                     "We may and will only delete these after the period of the respective period has expired.\n" +
                                     "Therefore, please do not open a support ticket.\n" +
@@ -88,17 +95,34 @@ public class DeleteAccount extends ListenerAdapter {
                                     "If you delete your account, you terminate the contract between you and us without notice.\n" +
                                     "\n" +
                                     "Please confirm now your account deletion and that you have understood the information above.\n" +
-                                    "Your account and servers will be deleted **permanently** without any chance to recover it.\n" +
+                                    "Your account and servers will be deleted permanently without any chance to recover it.\n" +
                                     "Please save your servers, if you didn't already.\n" +
-                                    "**Your support tickets will not be deleted. If you want that we delete your tickets too, please open a support ticket (ironically) or write a E-Mail to support@vultronstudios.net.**")
-                            .addActionRow(Button.danger("accdel_confirm", "Confirm deletion"))
+                                    "Your support tickets will not be deleted. If you want that we delete your tickets too, please open a support ticket or write a E-Mail to support@vultronstudios.net.");
+                    event.replyEmbeds(b.build())
                             .setEphemeral(true)
+                            .addActionRow(Button.danger("accdel_confirm", "Confirm deletion"))
                             .queue();
                 } else {
-                    event.reply("The information does not match the stored data.").setEphemeral(true).queue();
+                    EmbedBuilder builder = new EmbedBuilder();
+                    builder.setColor(Color.cyan);
+                    builder.setAuthor("ELIZON.");
+                    builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+                    builder.setDescription(
+                            "The information does not match the stored data.");
+                    event.replyEmbeds(builder.build())
+                            .setEphemeral(true)
+                            .queue();
                 }
             } else {
-                event.reply("You aren't registered.").setEphemeral(true).queue();
+                EmbedBuilder builder = new EmbedBuilder();
+                builder.setColor(Color.cyan);
+                builder.setAuthor("ELIZON.");
+                builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+                builder.setDescription(
+                        "You aren't registered.");
+                event.replyEmbeds(builder.build())
+                        .setEphemeral(true)
+                        .queue();
             }
         }
     }
@@ -141,7 +165,9 @@ public class DeleteAccount extends ListenerAdapter {
             TextChannel channel = guild.getTextChannelById(new Hooks().fromFile("vultronGuildChannelID"));
             EmbedBuilder builder = new EmbedBuilder();
             builder.setTitle("Account deletion confirmation request");
-            builder.setColor(Color.BLACK);
+            builder.setColor(Color.cyan);
+            builder.setAuthor("ELIZON.");
+            builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
             builder.addField("E-Mail", user.getEmail(), true);
             builder.addField("Username", user.getUserName(), true);
             builder.addField("Mail title", "Confirmation of account deletion", true);
@@ -150,12 +176,24 @@ public class DeleteAccount extends ListenerAdapter {
                     "We want to inform you, that your account with the E-Mail \"" + user.getEmail() + "\" has been deleted successfully.\n\n" +
                     "If you've any question, please answer to this E-Mail.\n" +
                     "\n" +
-                    "- Vultron Studios Support", true);
+                    "- ELIZON. Support", true);
             assert channel != null;
             channel.sendMessageEmbeds(builder.build()).queue();
 
             user.delete().execute();
-            event.reply("Your account is now deleted.\nIf you have further questions, please contact us over **/support** or write us a E-Mail to support@vultronstudios.net.\nYour account deletion will be confirmed via E-Mail as soon as possible.").setEphemeral(true).queue();
+
+            EmbedBuilder b = new EmbedBuilder();
+            b.setColor(Color.cyan);
+            b.setAuthor("ELIZON.");
+            b.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+            b.setDescription(
+                    "Your account is now deleted.\n" +
+                            "If you have further questions, please contact us over /support or write us a E-Mail to support@vultronstudios.net.\n" +
+                            "Your account deletion will be confirmed via E-Mail as soon as possible.");
+            event.replyEmbeds(b.build())
+                    .setEphemeral(true)
+                    .queue();
         }
     }
+
 }

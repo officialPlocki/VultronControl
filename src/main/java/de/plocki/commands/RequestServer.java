@@ -57,7 +57,15 @@ public class RequestServer extends ListenerAdapter {
             Modal modal = Modal.create("requestServer", "Server Request")
                     .addActionRows(ActionRow.of(usage), ActionRow.of(subdomain), ActionRow.of(accept)).build();
             if(!new AccountManager().hasAccount(event.getInteraction().getUser().getIdLong())) {
-                event.reply("You must create a hosting account first.").setEphemeral(true).queue();
+                EmbedBuilder builder = new EmbedBuilder();
+                builder.setColor(Color.cyan);
+                builder.setAuthor("ELIZON.");
+                builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+                builder.setDescription(
+                        "You must create a hosting account first.");
+                event.replyEmbeds(builder.build())
+                        .setEphemeral(true)
+                        .queue();
             } else {
                 event.replyModal(modal).queue();
             }
@@ -70,7 +78,7 @@ public class RequestServer extends ListenerAdapter {
     public void onModalInteraction(@NotNull ModalInteractionEvent event) {
         if(event.getModalId().equals("requestServer")) {
             if(event.getValue("terms_accept").getAsString().equals("YES")) {
-                AtomicBoolean b = new AtomicBoolean(false);
+                AtomicBoolean c = new AtomicBoolean(false);
 
                 if(!event.getValue("server_subdomain").getAsString().equalsIgnoreCase("none")) {
                     FileBuilder builder = new FileBuilder("servers");
@@ -81,10 +89,23 @@ public class RequestServer extends ListenerAdapter {
                         list = new ArrayList<>();
                     }
                     list.forEach(s -> {
-                        if(s.equalsIgnoreCase(event.getValue("server_subdomain").getAsString())) b.set(true);
+                        if(s.equalsIgnoreCase(event.getValue("server_subdomain").getAsString())) c.set(true);
                     });
-                    if(b.get()) {
-                        event.reply("Subdomain is currently not available.\n\nYour usage description:\n```text\n" + event.getValue("server_usage").getAsString() + "\n```").setEphemeral(true).queue();
+                    if(c.get()) {
+                        EmbedBuilder b = new EmbedBuilder();
+                        b.setColor(Color.cyan);
+                        b.setAuthor("ELIZON.");
+                        b.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+                        b.setDescription(
+                                "Subdomain is currently not available.\n" +
+                                        "\n" +
+                                        "Your usage description:\n" +
+                                        "\n" +
+                                        event.getValue("server_usage").getAsString() + "\n"
+                                        );
+                        event.replyEmbeds(b.build())
+                                .setEphemeral(true)
+                                .queue();
                         return;
                     }
                 }
@@ -114,12 +135,38 @@ public class RequestServer extends ListenerAdapter {
                         .addOption("Custom (Accept, ticket)","custom")
                         .addOption("Subdomain (Decline)","subdomain")
                         .build()).queue();
-                event.reply("Your request has been submitted with the ID #" + uuid + "\nA copy of this message will be sent to you over DM.").setEphemeral(true).queue();
+                EmbedBuilder b = new EmbedBuilder();
+                b.setColor(Color.cyan);
+                b.setAuthor("ELIZON.");
+                b.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+                b.setDescription(
+                        "Your request has been submitted with the ID #" + uuid + "\n" +
+                                "A copy of this message will be sent to you over DM.");
+                event.replyEmbeds(b.build())
+                        .setEphemeral(true)
+                        .queue();
                 event.getInteraction().getUser().openPrivateChannel().queue(privateChannel -> {
-                    privateChannel.sendMessage("Your request has been submitted with the ID #" + uuid).queue();
+                    EmbedBuilder b2 = new EmbedBuilder();
+                    b2.setColor(Color.cyan);
+                    b2.setAuthor("ELIZON.");
+                    b2.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+                    b2.setDescription(
+                            "Your request has been submitted with the ID #" + uuid);
+                    event.replyEmbeds(b2.build())
+                            .setEphemeral(true)
+                            .queue();
                 });
             } else {
-                event.reply("Please write explicitly \"YES\" in uppercase to accept!\nLegal: https://vultronstudios.net/legal").setEphemeral(true).queue();
+                EmbedBuilder builder = new EmbedBuilder();
+                builder.setColor(Color.cyan);
+                builder.setAuthor("ELIZON.");
+                builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+                builder.setDescription(
+                        "Please write explicitly \"YES\" in uppercase to accept!\n" +
+                                "Legal: https://vultronstudios.net/legal");
+                event.replyEmbeds(builder.build())
+                        .setEphemeral(true)
+                        .queue();
             }
         }
     }
@@ -186,11 +233,28 @@ public class RequestServer extends ListenerAdapter {
             }
 
             user.openPrivateChannel().queue(privateChannel -> {
-                privateChannel.sendMessage("Your request with the ID " + embed.getFooter().getText() + " has been answered.\nThe request has been accepted and a server fitting to your request is being installed.\nYou should receive a E-Mail, when the server is ready.").queue();
+
+                EmbedBuilder builder = new EmbedBuilder();
+                builder.setColor(Color.cyan);
+                builder.setAuthor("ELIZON.");
+                builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+                builder.setDescription(
+                        "Your request with the ID " + embed.getFooter().getText() + " has been answered.\n" +
+                                "The request has been accepted and a server fitting to your request is being installed.\n" +
+                                "You should receive a E-Mail, when the server is ready.");
+                privateChannel.sendMessageEmbeds(builder.build())
+                        .queue();
             });
 
-            event.getChannel().sendMessage("Answer has been transmitted.").queue();
-            event.getMessage().delete();
+            EmbedBuilder builder = new EmbedBuilder();
+            builder.setColor(Color.cyan);
+            builder.setAuthor("ELIZON.");
+            builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+            builder.setDescription(
+                    "Answer has been transmitted.");
+            event.getChannel().sendMessageEmbeds(builder.build())
+                    .queue();
+            event.getMessage().delete().queue();
         } else if(event.getValues().get(0).equals("server_mid")) {
             MessageEmbed embed = event.getMessage().getEmbeds().get(0);
             event.getChannel().sendMessage("Transmitting answer to request " + Objects.requireNonNull(embed.getFooter()).getText() + "...").queue();
@@ -251,11 +315,28 @@ public class RequestServer extends ListenerAdapter {
             }
 
             user.openPrivateChannel().queue(privateChannel -> {
-                privateChannel.sendMessage("Your request with the ID " + embed.getFooter().getText() + " has been answered.\nThe request has been accepted and a server fitting to your request is being installed.\nYou should receive a E-Mail, when the server is ready.").queue();
+
+                EmbedBuilder builder = new EmbedBuilder();
+                builder.setColor(Color.cyan);
+                builder.setAuthor("ELIZON.");
+                builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+                builder.setDescription(
+                        "Your request with the ID " + embed.getFooter().getText() + " has been answered.\n" +
+                                "The request has been accepted and a server fitting to your request is being installed.\n" +
+                                "You should receive a E-Mail, when the server is ready.");
+                privateChannel.sendMessageEmbeds(builder.build())
+                        .queue();
             });
 
-            event.getChannel().sendMessage("Answer has been transmitted.").queue();
-            event.getMessage().delete();
+            EmbedBuilder builder = new EmbedBuilder();
+            builder.setColor(Color.cyan);
+            builder.setAuthor("ELIZON.");
+            builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+            builder.setDescription(
+                    "Answer has been transmitted.");
+            event.getChannel().sendMessageEmbeds(builder.build())
+                    .queue();
+            event.getMessage().delete().queue();
         } else if(event.getValues().get(0).equals("server_high")) {
             MessageEmbed embed = event.getMessage().getEmbeds().get(0);
             event.getChannel().sendMessage("Transmitting answer to request " + Objects.requireNonNull(embed.getFooter()).getText() + "...").queue();
@@ -319,73 +400,168 @@ public class RequestServer extends ListenerAdapter {
             }
 
             user.openPrivateChannel().queue(privateChannel -> {
-                privateChannel.sendMessage("Your request with the ID " + embed.getFooter().getText() + " has been answered.\nThe request has been accepted and a server fitting to your request is being installed.\nYou should receive a E-Mail, when the server is ready.").queue();
+
+                EmbedBuilder builder = new EmbedBuilder();
+                builder.setColor(Color.cyan);
+                builder.setAuthor("ELIZON.");
+                builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+                builder.setDescription(
+                        "Your request with the ID " + embed.getFooter().getText() + " has been answered.\n" +
+                                "The request has been accepted and a server fitting to your request is being installed.\n" +
+                                "You should receive a E-Mail, when the server is ready.");
+                privateChannel.sendMessageEmbeds(builder.build())
+                        .queue();
             });
 
-            event.getChannel().sendMessage("Answer has been transmitted.").queue();
-            event.getMessage().delete();
+            EmbedBuilder builder = new EmbedBuilder();
+            builder.setColor(Color.cyan);
+            builder.setAuthor("ELIZON.");
+            builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+            builder.setDescription(
+                    "Answer has been transmitted.");
+            event.getChannel().sendMessageEmbeds(builder.build())
+                    .queue();
+            event.getMessage().delete().queue();
         } else if(event.getValues().get(0).equals("insufficient")) {
             MessageEmbed embed = event.getMessage().getEmbeds().get(0);
             event.getChannel().sendMessage("Transmitting answer to request " + Objects.requireNonNull(embed.getFooter()).getText() + "...").queue();
             User user = Main.jda.retrieveUserById(Objects.requireNonNull(embed.getAuthor().getName())).complete();
 
+
             user.openPrivateChannel().queue(privateChannel -> {
-                privateChannel.sendMessage("Your request with the ID " + embed.getFooter().getText() + " has been answered.\nThe request has been declined because of insufficient descriptions about the usage.\nYou can request a server again at every time.").queue();
+
+                EmbedBuilder builder = new EmbedBuilder();
+                builder.setColor(Color.cyan);
+                builder.setAuthor("ELIZON.");
+                builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+                builder.setDescription(
+                        "Your request with the ID " + embed.getFooter().getText() + " has been answered.\n" +
+                                "The request has been declined because of insufficient descriptions about the usage.\n" +
+                                "You can request a server again at every time.");
+                privateChannel.sendMessageEmbeds(builder.build())
+                        .queue();
             });
 
-            event.getChannel().sendMessage("Answer has been transmitted.").queue();
-            event.getMessage().delete();
+            EmbedBuilder builder = new EmbedBuilder();
+            builder.setColor(Color.cyan);
+            builder.setAuthor("ELIZON.");
+            builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+            builder.setDescription(
+                    "Answer has been transmitted.");
+            event.getChannel().sendMessageEmbeds(builder.build())
+                    .queue();
+            event.getMessage().delete().queue();
         } else if(event.getValues().get(0).equals("declined")) {
             MessageEmbed embed = event.getMessage().getEmbeds().get(0);
             event.getChannel().sendMessage("Transmitting answer to request " + Objects.requireNonNull(embed.getFooter()).getText() + "...").queue();
             User user = Main.jda.retrieveUserById(Objects.requireNonNull(Objects.requireNonNull(embed.getAuthor()).getName())).complete();
 
             user.openPrivateChannel().queue(privateChannel -> {
-                privateChannel.sendMessage("Your request with the ID " + embed.getFooter().getText() + " has been answered.\nThe request has been declined.\nTo get a higher chance of being accepted, please wait two or more days.").queue();
+                EmbedBuilder builder = new EmbedBuilder();
+                builder.setColor(Color.cyan);
+                builder.setAuthor("ELIZON.");
+                builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+                builder.setDescription(
+                        "Your request with the ID " + embed.getFooter().getText() + " has been answered.\n" +
+                                "The request has been declined.\n" +
+                                "To get a higher chance of being accepted, please wait two or more days.");
+                privateChannel.sendMessageEmbeds(builder.build())
+                        .queue();
             });
 
-            event.getChannel().sendMessage("Answer has been transmitted.").queue();
-            event.getMessage().delete();
+            EmbedBuilder builder = new EmbedBuilder();
+            builder.setColor(Color.cyan);
+            builder.setAuthor("ELIZON.");
+            builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+            builder.setDescription(
+                    "Answer has been transmitted.");
+            event.getChannel().sendMessageEmbeds(builder.build())
+                    .queue();
+            event.getMessage().delete().queue();
         } else if(event.getValues().get(0).equals("amount")) {
             MessageEmbed embed = event.getMessage().getEmbeds().get(0);
             event.getChannel().sendMessage("Transmitting answer to request " + Objects.requireNonNull(embed.getFooter()).getText() + "...").queue();
             User user = Main.jda.retrieveUserById(Objects.requireNonNull(Objects.requireNonNull(embed.getAuthor()).getName())).complete();
 
             user.openPrivateChannel().queue(privateChannel -> {
-                privateChannel.sendMessage("Your request with the ID " + embed.getFooter().getText() + " has been answered.\nThe request has been declined.\nYou've currently to many servers or currently are no servers available.").queue();
+                EmbedBuilder builder = new EmbedBuilder();
+                builder.setColor(Color.cyan);
+                builder.setAuthor("ELIZON.");
+                builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+                builder.setDescription(
+                        "Your request with the ID " + embed.getFooter().getText() + " has been answered.\n" +
+                                "The request has been declined.\n" +
+                                "You've currently to many servers or currently are no servers available.");
+                privateChannel.sendMessageEmbeds(builder.build())
+                        .queue();
             });
 
-            event.getChannel().sendMessage("Answer has been transmitted.").queue();
-            new Thread(() -> {
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-                event.getMessage().delete();
-            }).start();
+            EmbedBuilder builder = new EmbedBuilder();
+            builder.setColor(Color.cyan);
+            builder.setAuthor("ELIZON.");
+            builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+            builder.setDescription(
+                    "Answer has been transmitted.");
+            event.getChannel().sendMessageEmbeds(builder.build())
+                    .queue();
+            event.getMessage().delete().queue();
         } else if(event.getValues().get(0).equals("custom")) {
             MessageEmbed embed = event.getMessage().getEmbeds().get(0);
             event.getChannel().sendMessage("Transmitting answer to request " + Objects.requireNonNull(embed.getFooter()).getText() + "...").queue();
             User user = Main.jda.retrieveUserById(Objects.requireNonNull(Objects.requireNonNull(embed.getAuthor()).getName())).complete();
 
             user.openPrivateChannel().queue(privateChannel -> {
-                privateChannel.sendMessage("Your request with the ID " + embed.getFooter().getText() + " has been answered.\n\nWe liked your request.\nWe would like to have a short conversation with you to clarify everything else with you.\nMaybe we are also ready for a partnership with you :)\n#dedicatedipincoming").queue();
+                EmbedBuilder builder = new EmbedBuilder();
+                builder.setColor(Color.cyan);
+                builder.setAuthor("ELIZON.");
+                builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+                builder.setDescription(
+                        "Your request with the ID " + embed.getFooter().getText() + " has been answered.\n" +
+                                "\n" +
+                                "We liked your request.\n" +
+                                "We would like to have a short conversation with you to clarify everything else with you.\n" +
+                                "Maybe we are also ready for a partnership with you :)");
+                privateChannel.sendMessageEmbeds(builder.build())
+                        .queue();
             });
 
-            event.getChannel().sendMessage("Answer has been transmitted.").queue();
-            event.getMessage().delete();
+            EmbedBuilder builder = new EmbedBuilder();
+            builder.setColor(Color.cyan);
+            builder.setAuthor("ELIZON.");
+            builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+            builder.setDescription(
+                    "Answer has been transmitted.");
+            event.getChannel().sendMessageEmbeds(builder.build())
+                    .queue();
+            event.getMessage().delete().queue();
         } else if(event.getValues().get(0).equals("subdomain")) {
             MessageEmbed embed = event.getMessage().getEmbeds().get(0);
             event.getChannel().sendMessage("Transmitting answer to request " + Objects.requireNonNull(embed.getFooter()).getText() + "...").queue();
             User user = Main.jda.retrieveUserById(Objects.requireNonNull(Objects.requireNonNull(embed.getAuthor()).getName())).complete();
 
             user.openPrivateChannel().queue(privateChannel -> {
-                privateChannel.sendMessage("Your request with the ID " + embed.getFooter().getText() + " has been answered.\n\nYour subdomain is currently not available, not desired as it may be inappropriate or offensive.").queue();
+                EmbedBuilder builder = new EmbedBuilder();
+                builder.setColor(Color.cyan);
+                builder.setAuthor("ELIZON.");
+                builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+                builder.setDescription(
+                        "Your request with the ID " + embed.getFooter().getText() + " has been answered.\n" +
+                                "\n" +
+                                "Your subdomain is currently not available, not desired as it may be inappropriate or offensive.");
+                privateChannel.sendMessageEmbeds(builder.build())
+                        .queue();
             });
 
-            event.getChannel().sendMessage("Answer has been transmitted.").queue();
-            event.getMessage().delete();
+            EmbedBuilder builder = new EmbedBuilder();
+            builder.setColor(Color.cyan);
+            builder.setAuthor("ELIZON.");
+            builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+            builder.setDescription(
+                    "Answer has been transmitted.");
+            event.getChannel().sendMessageEmbeds(builder.build())
+                    .queue();
+            event.getMessage().delete().queue();
         }
     }
+
 }
