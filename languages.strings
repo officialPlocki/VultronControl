@@ -1,0 +1,166 @@
+EN:
+  createaccount_only_dm: This command is only available in Direct Messages. I'll send
+    you a message.
+  createaccount_desc_create: Do you want to create a ELIZON. Account?
+  createaccount_msg_email: Please enter a valid E-Mail address.
+  wait: Please wait...
+  createaccount_already_registered: Your ID is already registered.
+  createaccount_view: Click here to receive your credentials.
+  createaccount_cred: Please change the password after login and enable 2-FA if you
+    want (recommended).
+  terms_accept: |-
+    Privacy Policy, Special Conditions ELIZON.BOT & Terms of Use (ELIZON. section): https://vultronstudios.net/legal
+    Do you accept the Privacy Policy, Special Conditions ELIZON.BOT and Terms of Use (ELIZON. section)?
+  int_sorry: Okay, we're sorry to hear that.
+  int_email: |-
+    Please write now your E-Mail you want to use.
+    Please use a real E-Mail, you'll need it when you want to get notifications or change the password.
+  int_cant_load: |-
+    Can't load credentials.
+    You can reset your password at the panel login page with your entered email.
+  survey_accdel_reason: Please tell us why you want to delete your account (Anonymous).
+  survey_accdel_feedback: What can we do better next time (Anonymous)?
+  reason: Reason
+  accdel: Account deletion
+  accdel_email: Please enter your E-Mail for confirmation.
+  accdel_information: |-
+    Do you really want do delete your ELIZON. Account?
+    All servers and data will be permanently deleted.
+  accdel_dataf: The information does not match the stored data.
+  accdel_notreg: You aren't registered.
+  accdel_confirm: |-
+    Your account is now deleted.
+    If you have further questions, please contact us over /support or write us a E-Mail to support@vultronstudios.net.
+    Your account deletion will be confirmed via E-Mail as soon as possible.
+  legal_inf: |-
+    Gesonderte Bedingungen ELIZON.BOT: https://vultronstudios.net/legal
+    Nutzungsbedingungen (ELIZON. Sektion): https://vultronstudios.net/legal
+    Datenschutzerklärung: https://vultronstudios.net/legal
+  req_usage_desc: Describe for what you want to use the server.
+  req_usage: Usage
+  req_subdomain_desc: Wunsch für eine vultron.network subdomain, schreibe "none" für
+    keine.
+  req_legal: LEGAL
+  req_answ_subdom_av: Subdomain is currently not available.
+  req_answ_req_submit: 'Your request has been submitted with the ID #'
+  req_legal_f: |-
+    Please write explicitly "YES" in uppercase to accept!
+    You can read the conditions with /legal.
+  req_answ_install: |-
+    Your request with the ID #%ID% has been answered.
+    The request has been accepted and a server fitting to your request is being installed.
+  req_legal_desc: |-
+    Do you accept the in /legal shown conditions?
+    Type "YES" to accept.
+  req_answ_insuf: |-
+    Your request with the ID %ID% has been answered.
+    The request has been declined because of insufficient descriptions about the usage.
+  req_answ_dec: |-
+    Your request with the ID #%ID% was answered.
+    Your request has been declined.
+    You can try it again, if you want.
+  req_answ_custom: |-
+    Your request with the ID #%ID% has been answered.
+
+    We liked your request.
+    We would like to have a short conversation with you to clarify everything else with you.
+    Please open a ticket with /support with the ID from above.
+  cancel_description: All actions are canceled.
+  abuse_description: |-
+    If you find any abusive content, offensive content or anything unappreciative on a server from ELIZON.,
+    please send us a mail over abuse@vultronstudios.net or open a ticket over /support and send us the subdomain / address of the server.
+    We make every effort to remove content of this type as soon as possible.
+    As soon as we become aware of something of this nature, we will take care of reviewing the content at the earliest opportunity,
+    removing it and taking action such as an account ban or server deletion.
+    We thank you in advance for your help.
+    In the whole process and after, your data will not be passed on to the user who owns the server.
+  survey_servdel_reason: Please tell us why you want to delete your server (Anonymous).
+  survey_servdel_feedback: What can we do better next time (Anonymous)?
+  servdel: Server deletion
+  servdel_email: Please enter your E-Mail for confirmation.
+  servdel_name: Enter the Server ID
+  servdel_confirm_information: Server has been deleted.
+  servdel_fail_own: You can only delete your own servers.
+  servdel_confirm: |-
+    Please confirm your decision.
+    Your server and subdomain (if given) will be deleted immediately and permanently removed with all data.
+DE:
+  createaccount_only_dm: Dieser Befehl ist nur in Direktnachrichten verfügbar. Ich
+    sende dir eine Nachricht.
+  createaccount_desc_create: Möchtest du ein ELIZON. Nutzerkonto erstellen?
+  createaccount_msg_email: Die eingegebene E-Mail Adresse wurde nicht erkannt.
+  wait: Bitte warten...
+  createaccount_already_registered: Deine ID ist bereits registriert.
+  createaccount_view: Klicke hier um deine Anmeldedaten zu erhalten.
+  createaccount_cred: Bitte ändere das Passwort nach der Anmeldung und aktiviere 2-FA,
+    für extra Sicherheit (empfohlen).
+  terms_accept: |-
+    Datenschutzerklärung, Gesonderte Bedingungen ELIZON.BOT & Nutzungsbedingungen (ELIZON. Sektion): https://vultronstudios.net/legal
+    Akzeptierst du die Datenschutzerklärung, Gesonderten Bedingungen ELIZON.BOT und Nutzungsbedingungen (ELIZON. Sektion)?
+  int_sorry: Okay, das tut uns leid.
+  int_email: |-
+    Bitte gebe jetzt doe E-Mail Adresse ein, die du verwenden möchtest.
+    Bitte verwende eine echte E-Mail, du benötigst sie, wenn du dein Benachrichtigungen erhalten oder das Passwort ändern möchtest.
+  int_cant_load: |-
+    Anmeldedaten konnten nicht geladen werden.
+    Du kannst dein Password im Nutzerpanel mit deiner verwendeten E-Mail Adresse zurücksetzen.
+  survey_accdel_reason: Bitte sage uns, warum du deinen Account löschen möchtest (Anonym).
+  survey_accdel_feedback: Was können wir das nächstes mal Verbessern (Anonym)?
+  reason: Grund
+  accdel: Konto Löschung
+  accdel_email: Bitte gebe deine E-Mail zur Bestätigung ein.
+  accdel_information: |-
+    Möchtest du wirklich dein ELIZON. Nutzerkonto löschen?
+    Alle Server und Daten werden permanent gelöscht.
+  accdel_dataf: Die angegebenen Informationen passen nicht zu den gespeicherten Daten.
+  accdel_notreg: Du besitzt kein ELIZON. Konto.
+  accdel_confirm: |-
+    Dein Konto ist jetzt gelöscht.
+    Falls du weitere Fragen hast, kontaktiere uns über /support oder per E-Mail an support@vultronstudios.net.
+    Deine Kontolöschung wird dir zum nächst möglichen Zeitpunkt per E-Mail bestätigt.
+  req_usage_desc: Beschreibe, für was du den Server nutzen möchtest.
+  req_usage: Nutzung
+  req_legal: RECHTLICHES
+  req_answ_subdom_av: Die Subdomain ist aktuell nicht verfügbar.
+  req_answ_req_submit: 'Deine Anfrage wurde unter der folgender ID gesendet: #'
+  req_legal_f: |-
+    Bitte schreibe explizit "YES" in Großbuchstaben zum akzeptieren!
+    Du kannst die Konditionen mit /legal lesen.
+  req_answ_install: |-
+    Deine Anfrage mit der ID #%ID% wurde beantwortet.
+    Deine Anfrage wurde akzeptiert und ein passender Server wird gerade installiert.
+  req_legal_desc: |-
+    Akzeptierst du die in /legal angegebenen Bedingungen?
+    Schreibe "YES" zum akzeptieren.
+  req_answ_insuf: |-
+    Deine Anfrage mit der ID #%ID% wurde beantwortet.
+    Deine beschriebene Nutzung war leider nicht ausreichend formuliert.
+  req_answ_dec: |-
+    Deine Anfrage mit der ID #%ID% wurde beantwortet.
+    Deine Anfrage wurde leider abgelehnt.
+    Du kannst es gerne noch einmal versuchen.
+  req_answ_custom: |-
+    Deine Anfrage mit der ID #%ID% wurde beantwortet.
+
+    Wir mögen deine Anfrage.
+    Wir würden uns gerne mit dir über dein Vorhaben unterhalten und mit dir alles nähere klären.
+    Bitte öffne ein Ticket mit /support und benenne dort die ID von der Anfrage.
+  cancel_description: Alle Aktionen wurden abgebrochen.
+  abuse_description: |-
+    Wenn du auf einem Server von ELIZON. beleidigende Inhalte, anstößige Inhalte oder irgendetwas Unanerkennendes findest,
+    sendest du uns bitte eine E-Mail an abuse@vultronstudios.net oder öffnest ein Ticket über /support und sendest uns die Subdomain / Adresse des Servers.
+    Wir bemühen uns, Inhalte dieser Art zu schnellstmöglich entfernen.
+    Sobald uns etwas derartiges bekannt wird, werden wir uns bemühen, die Inhalte so schnell wie möglich zu überprüfen,
+    zu entfernen und Maßnahmen wie eine Kontosperre oder Serverlöschung einzuleiten.
+    Vielen Danken im Voraus für deine Hilfe.
+    Während des gesamten Prozesses und danach werden deine Daten nicht an den Nutzer weitergegeben, dem der Server gehört.
+  survey_servdel_reason: Bitte sage uns, warum du deinen Server löschen möchtest (Anonym).
+  survey_servdel_feedback: Was können wir das nächstes mal Verbessern (Anonym)?
+  servdel: Server Löschung
+  servdel_email: Bitte gebe deine E-Mail zur Bestätigung ein.
+  servdel_name: Schreibe hier die Server ID herein
+  servdel_confirm_information: Server wurde gelöscht.
+  servdel_fail_own: Du kannst nur deine eigenen Server löschen.
+  servdel_confirm: |-
+    Bitte bestätige deine Entscheidung.
+    Dein Server und Subdomain (wenn vergeben) werden direkt und permanent mit allen Daten gelöscht.
