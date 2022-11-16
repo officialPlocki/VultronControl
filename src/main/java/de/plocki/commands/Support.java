@@ -1,18 +1,25 @@
 package de.plocki.commands;
 
+import com.mattmalec.pterodactyl4j.DataType;
+import com.mattmalec.pterodactyl4j.application.entities.ApplicationServer;
+import com.mattmalec.pterodactyl4j.application.entities.ApplicationUser;
 import de.plocki.Main;
 import de.plocki.ai.SupportAI;
 import de.plocki.util.Hooks;
+import de.plocki.util.LanguageUtil;
 import de.plocki.util.SupportManager;
 import de.plocki.util.TicketInformation;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.SelectMenuInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.Modal;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
 import net.dv8tion.jda.api.interactions.components.text.TextInput;
 import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
 import org.jetbrains.annotations.NotNull;
@@ -29,33 +36,39 @@ public class Support extends ListenerAdapter {
 
     public final static HashMap<Long, Long> helper = new HashMap<>();
     public final static HashMap<Long, Boolean> sent = new HashMap<>();
+    public static final HashMap<Long, String> servers = new HashMap<>();
 
-    //@todo -> modal & right questions
+    //@todo -> modal & account management
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if(event.getName().equalsIgnoreCase("support")) {
+            LanguageUtil util = new LanguageUtil();
+            LanguageUtil.lang lang = util.getUserLanguage(event.getInteraction().getUser().getIdLong());
             CreateAccount.waitingEmail.remove(event.getInteraction().getUser().getIdLong());
             RequestServer.usage.remove(event.getInteraction().getUser().getIdLong());
             if(event.getChannel().getType().isGuild()) {
+
                 EmbedBuilder builder = new EmbedBuilder();
                 builder.setColor(Color.cyan);
                 builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
                 builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
-                builder.setDescription(
-                        "This command is only available in direct messages. I'll send you a message.");
+                builder.setDescription(util.getString("createaccount_only_dm", lang));
                 event.replyEmbeds(builder.build())
                         .setEphemeral(true)
                         .queue();
                 event.getInteraction().getUser().openPrivateChannel().queue(privateChannel -> {
-
                     EmbedBuilder b = new EmbedBuilder();
                     b.setColor(Color.cyan);
-                    b.setAuthor("ELIZON.");
+    
+                b.setAuthor("ELIZON.");
+                b.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
                     b.setThumbnail(new Hooks().fromFile("thumbnailURL"));
                     b.setDescription(
                             "Creating ticket...\n" +
-                                    "Please write now the reason why you're contacting us today.\nPlease use only keywords.");
+                                    "Please write now the reason why you're contacting us today.\n" +
+                                    "Please use only keywords.");
                     privateChannel.sendMessageEmbeds(b.build())
                             .queue();
                     s.put(event.getInteraction().getUser().getIdLong(), true);
@@ -63,21 +76,13 @@ public class Support extends ListenerAdapter {
                 return;
             }
             if(event.getChannel().getType().isMessage()) {
-                EmbedBuilder builder = new EmbedBuilder();
-                builder.setColor(Color.cyan);
-                builder.setAuthor("ELIZON.");
-                builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
-                builder.setDescription(
-                        "Creating ticket...");
-                event.getChannel().sendMessageEmbeds(builder.build())
-                        .queue();
-                event.getChannel().sendMessage("Creating ticket...").queue();
-
                 EmbedBuilder b = new EmbedBuilder();
                 b.setColor(Color.cyan);
+
                 b.setAuthor("ELIZON.");
+                b.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
                 b.setThumbnail(new Hooks().fromFile("thumbnailURL"));
-                b.setDescription(
+                b.setDescription("Creating ticket...\n" +
                         "Please write now the reason why you're contacting us today.\nPlease use only keywords.");
                 event.replyEmbeds(b.build())
                         .setEphemeral(true)
@@ -90,6 +95,7 @@ public class Support extends ListenerAdapter {
                 EmbedBuilder builder = new EmbedBuilder();
                 builder.setColor(Color.cyan);
                 builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
                 builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
                 builder.setDescription(
                         "Please write now your answer in your direct messages.");
@@ -101,6 +107,7 @@ public class Support extends ListenerAdapter {
                     EmbedBuilder b = new EmbedBuilder();
                     b.setColor(Color.cyan);
                     b.setAuthor("ELIZON.");
+                    b.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
                     b.setThumbnail(new Hooks().fromFile("thumbnailURL"));
                     b.setDescription(
                             "I'm here!");
@@ -112,6 +119,7 @@ public class Support extends ListenerAdapter {
                 EmbedBuilder builder = new EmbedBuilder();
                 builder.setColor(Color.cyan);
                 builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
                 builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
                 builder.setDescription(
                         "Please write now your answer.");
@@ -132,6 +140,7 @@ public class Support extends ListenerAdapter {
                     EmbedBuilder builder = new EmbedBuilder();
                     builder.setColor(Color.cyan);
                     builder.setAuthor("ELIZON.");
+                    builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
                     builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
                     builder.setDescription(
                             "Ticket closed because of inactivity.");
@@ -142,6 +151,7 @@ public class Support extends ListenerAdapter {
                     EmbedBuilder builder = new EmbedBuilder();
                     builder.setColor(Color.cyan);
                     builder.setAuthor("ELIZON.");
+                    builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
                     builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
                     builder.setDescription(
                             "Ticket closed.");
@@ -154,6 +164,7 @@ public class Support extends ListenerAdapter {
                     EmbedBuilder builder = new EmbedBuilder();
                     builder.setColor(Color.cyan);
                     builder.setAuthor("ELIZON.");
+                    builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
                     builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
                     builder.setDescription(
                             "This isn't your ticket.");
@@ -166,6 +177,7 @@ public class Support extends ListenerAdapter {
                 EmbedBuilder builder = new EmbedBuilder();
                 builder.setColor(Color.cyan);
                 builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
                 builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
                 builder.setDescription(
                         "Ticket is now being transferred.");
@@ -177,7 +189,8 @@ public class Support extends ListenerAdapter {
                 if(helper.containsKey(event.getChannel().getIdLong())) {
                     EmbedBuilder builder = new EmbedBuilder();
                     builder.setColor(Color.cyan);
-                    builder.setAuthor("ELIZON.");
+                builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
                     builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
                     builder.setDescription(
                             "This ticket is already claimed.");
@@ -190,6 +203,7 @@ public class Support extends ListenerAdapter {
                 EmbedBuilder builder = new EmbedBuilder();
                 builder.setColor(Color.cyan);
                 builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
                 builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
                 builder.setDescription(
                         "Ticket was claimed by " + Objects.requireNonNull(event.getInteraction().getMember()).getNickname() + ".");
@@ -201,6 +215,7 @@ public class Support extends ListenerAdapter {
                     EmbedBuilder builder = new EmbedBuilder();
                     builder.setColor(Color.cyan);
                     builder.setAuthor("ELIZON.");
+                    builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
                     builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
                     builder.setDescription(
                             "Message already sent.");
@@ -212,17 +227,19 @@ public class Support extends ListenerAdapter {
                 EmbedBuilder builder = new EmbedBuilder();
                 builder.setColor(Color.cyan);
                 builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
                 builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
                 builder.setDescription(
                         "Sent welcome message.");
                 event.replyEmbeds(builder.build())
                         .queue();
-                new SupportManager().sendMessageToCustomer(event.getChannel().getIdLong(), "Welcome to the ELIZON. support. Do you want to be supported in english or german? You can answer at any time with /answer.");
+                new SupportManager().sendMessageToCustomer(event.getChannel().getIdLong(), "Welcome to the ELIZON. support.\n How can we help you today?\nYou can answer at any time with /answer.");
             } else if(event.getValues().get(0).equals("request_verify")) {
                 if(!(helper.get(event.getChannel().getIdLong()) == event.getInteraction().getUser().getIdLong())) {
                     EmbedBuilder builder = new EmbedBuilder();
                     builder.setColor(Color.cyan);
-                    builder.setAuthor("ELIZON.");
+                builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
                     builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
                     builder.setDescription(
                             "This isn't your ticket.");
@@ -234,6 +251,7 @@ public class Support extends ListenerAdapter {
                 EmbedBuilder builder = new EmbedBuilder();
                 builder.setColor(Color.cyan);
                 builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
                 builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
                 builder.setDescription(
                         "Requested verification code.");
@@ -244,7 +262,8 @@ public class Support extends ListenerAdapter {
                 if(!(helper.get(event.getChannel().getIdLong()) == event.getInteraction().getUser().getIdLong())) {
                     EmbedBuilder builder = new EmbedBuilder();
                     builder.setColor(Color.cyan);
-                    builder.setAuthor("ELIZON.");
+                builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
                     builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
                     builder.setDescription(
                             "This isn't your ticket.");
@@ -260,27 +279,256 @@ public class Support extends ListenerAdapter {
                 event.replyModal(modal).queue();
                 new SupportManager().sendMessageToCustomer(event.getChannel().getIdLong(), "Please wait. We're currently verifying your identity.");
             }
+        } else if(event.getComponent().getId().equals("support_acc_verif")) {
+            if(event.getValues().get(0).equals("edit_server")) {
+                if(!(helper.get(event.getChannel().getIdLong()) == event.getInteraction().getUser().getIdLong())) {
+                    EmbedBuilder builder = new EmbedBuilder();
+                    builder.setColor(Color.cyan);
+                    builder.setAuthor("ELIZON.");
+                    builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
+                    builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+                    builder.setDescription(
+                            "This isn't your ticket.");
+                    event.replyEmbeds(builder.build())
+                            .setEphemeral(true)
+                            .queue();
+                    return;
+                }
+                TextInput servername = TextInput.create("servername", "Server ID", TextInputStyle.SHORT)
+                        .setMinLength(1)
+                        .setRequired(true)
+                        .build();
+
+                Modal modal = Modal.create("editServerModal", "Edit Server")
+                        .addActionRow(servername)
+                        .build();
+                event.replyModal(modal).queue();
+            }
+        }
+    }
+
+    @Override
+    public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
+        if(event.getButton().getId().equals("cpu")) {
+            TextInput input = TextInput.create("edit_cpu", "Set CPU (100 = 1T)", TextInputStyle.SHORT)
+                    .setMinLength(2)
+                    .setMaxLength(3)
+                    .setRequired(true)
+                    .setPlaceholder("150").build();
+            Modal modal = Modal.create("edit_server_cpu", "Edit Server")
+                    .addActionRow(input).build();
+            event.replyModal(modal)
+                    .queue();
+        } else if(event.getButton().getId().equals("ram")) {
+            TextInput input = TextInput.create("edit_ram", "Set RAM (mb)", TextInputStyle.SHORT)
+                    .setMinLength(4)
+                    .setMaxLength(4)
+                    .setRequired(true)
+                    .setPlaceholder("1536").build();
+            Modal modal = Modal.create("edit_server_ram", "Edit Server")
+                    .addActionRow(input).build();
+            event.replyModal(modal)
+                    .queue();
+        } else if(event.getButton().getId().equals("disk")) {
+            TextInput input = TextInput.create("edit_disk", "Set CPU (gb)", TextInputStyle.SHORT)
+                    .setMinLength(1)
+                    .setMaxLength(2)
+                    .setRequired(true)
+                    .setPlaceholder("2").build();
+            Modal modal = Modal.create("edit_server_disk", "Edit Server")
+                    .addActionRow(input).build();
+            event.replyModal(modal)
+                    .queue();
+        } else if(event.getButton().getId().equals("alloc")) {
+            ApplicationServer server = new Hooks().getServerByID(servers.get(event.getChannel().getIdLong()));
+            server.getBuildManager().setAllowedAllocations(server.getAllocations().get().size() + 1).execute();
+
+            EmbedBuilder builder = new EmbedBuilder();
+            builder.setColor(Color.cyan);
+            builder.setAuthor("ELIZON.");
+            builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
+            builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+            builder.setDescription(
+                    "Allocation has been added.");
+            event.replyEmbeds(builder.build())
+                    .queue();
+
+            new SupportManager().sendMessageToCustomer(event.getChannel().getIdLong(), "The allocation limit has been increased.");
+        } else if(event.getButton().getId().equals("datab")) {
+            ApplicationServer server = new Hooks().getServerByID(servers.get(event.getChannel().getIdLong()));
+            server.getBuildManager().setAllowedDatabases(server.retrieveDatabases().execute().size() + 1).execute();
+
+            EmbedBuilder builder = new EmbedBuilder();
+            builder.setColor(Color.cyan);
+            builder.setAuthor("ELIZON.");
+            builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
+            builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+            builder.setDescription(
+                    "Database has been added.");
+            event.replyEmbeds(builder.build())
+                    .queue();
+
+            new SupportManager().sendMessageToCustomer(event.getChannel().getIdLong(), "The database limit has been increased.");
         }
     }
 
     @Override
     public void onModalInteraction(@NotNull ModalInteractionEvent event) {
-        if(event.getModalId().equals("verificationIdent")) {
-            String id = event.getValue("verifyCode").getAsString();
+        if(event.getChannel().getName().startsWith("archived-")) return;
+        if(event.getModalId().equals("editServerModal")) {
+            ApplicationServer server = new Hooks().getServerByID(Objects.requireNonNull(event.getValue("servername")).getAsString());
+            if(new Hooks().getPteroApplication().retrieveUserById(server.getOwnerIdLong()).execute().getUserName().equals(event.getChannel().getName())) {
+                EmbedBuilder builder = new EmbedBuilder();
+                builder.setColor(Color.cyan);
+                builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
+                builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+                builder.setDescription(
+                        "Server Info:\n" +
+                        "CPU: " + server.getLimits().getCPU() + "\n" +
+                        "RAM: " + server.getLimits().getMemory() + "\n" +
+                        "Disk: " + server.getLimits().getDisk() + "\n" +
+                        "Alloc.: " + server.getAllocations().get().size() + "\n" +
+                        "Datab.: " + server.retrieveDatabases().execute().size() + "\n" +
+                        "ID: " + server.getIdentifier());
+                event.replyEmbeds(builder.build())
+                        .addActionRow(
+                                Button.primary("cpu", "Change CPU"),
+                                Button.primary("ram", "Change RAM"),
+                                Button.primary("disk", "Change Disk"),
+                                Button.primary("alloc", "Add Allocation"),
+                                Button.primary("datab", "Add Database"))
+                        .queue();
+                servers.put(event.getChannel().getIdLong(), server.getIdentifier());
+
+                new SupportManager().sendMessageToCustomer(event.getChannel().getIdLong(), "Server Information has been requested.");
+            } else {
+                EmbedBuilder builder = new EmbedBuilder();
+                builder.setColor(Color.cyan);
+                builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
+                builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+                builder.setDescription(
+                        "Server not found.");
+                event.replyEmbeds(builder.build())
+                        .queue();
+            }
+        } else if(event.getModalId().startsWith("edit_server_")) {
+            String raw = event.getModalId().replaceAll("edit_server_", "");
+            String edit = "edit_" + raw;
+            ApplicationServer server = new Hooks().getServerByID(servers.get(event.getChannel().getIdLong()));
+            long val = Long.parseLong(Objects.requireNonNull(event.getValue(edit)).getAsString());
+            if(raw.equals("cpu")) {
+                server.getBuildManager().setCPU(val).execute();
+
+                EmbedBuilder builder = new EmbedBuilder();
+                builder.setColor(Color.cyan);
+                builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
+                builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+                builder.setDescription(
+                        "CPU has been updated.");
+                event.replyEmbeds(builder.build())
+                        .queue();
+                new SupportManager().sendMessageToCustomer(event.getChannel().getIdLong(), "CPU has been updated.\nTo apply the changes, please restart the server.");
+            } else if(raw.equals("ram")) {
+                if(val < 1536) {
+                    EmbedBuilder builder = new EmbedBuilder();
+                    builder.setColor(Color.cyan);
+                    builder.setAuthor("ELIZON.");
+                    builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
+                    builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+                    builder.setDescription(
+                            "RAM can't be less than 1536.");
+                    event.replyEmbeds(builder.build())
+                            .queue();
+                } else {
+                    server.getBuildManager().setMemory(val, DataType.MB).execute();
+                    EmbedBuilder builder = new EmbedBuilder();
+                    builder.setColor(Color.cyan);
+                    builder.setAuthor("ELIZON.");
+                    builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
+                    builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+                    builder.setDescription(
+                            "RAM has been updated.");
+                    event.replyEmbeds(builder.build())
+                            .queue();
+                    new SupportManager().sendMessageToCustomer(event.getChannel().getIdLong(), "RAM has been updated.\nTo apply the changes, please restart the server.");
+                }
+            } else if(raw.equals("disk")) {
+                if(val == 0) {
+                    EmbedBuilder builder = new EmbedBuilder();
+                    builder.setColor(Color.cyan);
+                    builder.setAuthor("ELIZON.");
+                    builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
+                    builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+                    builder.setDescription(
+                            "Disk can't be 0.");
+                    event.replyEmbeds(builder.build())
+                            .queue();
+                } else {
+                    server.getBuildManager().setDisk(val, DataType.GB).execute();
+
+                    EmbedBuilder builder = new EmbedBuilder();
+                    builder.setColor(Color.cyan);
+                    builder.setAuthor("ELIZON.");
+                    builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
+                    builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+                    builder.setDescription(
+                            "Disk has been updated.");
+                    event.replyEmbeds(builder.build())
+                            .queue();
+
+                    new SupportManager().sendMessageToCustomer(event.getChannel().getIdLong(), "Disk has been updated.\nTo apply the changes, please restart the server.");
+                }
+            }
+        } else if(event.getModalId().equals("verificationIdent")) {
+            String id = Objects.requireNonNull(event.getValue("verifyCode")).getAsString();
             if(VerifyCode.ident.get(id).equals(Long.parseLong(event.getChannel().getName()))) {
                 if(VerifyCode.codes.get(id)) {
                     VerifyCode.codes.remove(id);
                     VerifyCode.ident.remove(id);
-                    event.reply("Identity verified. You can now proceed.").queue();
+                    EmbedBuilder builder = new EmbedBuilder();
+                    builder.setColor(Color.cyan);
+                    builder.setAuthor("ELIZON.");
+                    builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
+                    builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+                    builder.setDescription(
+                            "Identity verified. You can now proceed.");
+
+                    SelectMenu menu = SelectMenu.create("support_acc_verif")
+                            .addOption("Edit Server", "edit_server")
+                            .build();
+
+                    event.replyEmbeds(builder.build()).addActionRow(menu)
+                            .queue();
                     new SupportManager().sendMessageToCustomer(event.getChannel().getIdLong(), "Your identity has been verified.");
                 } else {
                     VerifyCode.codes.remove(id);
                     VerifyCode.ident.remove(id);
-                    event.reply("Identity couldn't be verified. Please don't take any actions to the hosting account.\nThis procedure is only allowed up to three times.\nTransfer the ticket to the administration, if needed.").queue();
+                    EmbedBuilder builder = new EmbedBuilder();
+                    builder.setColor(Color.cyan);
+                    builder.setAuthor("ELIZON.");
+                    builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
+                    builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+                    builder.setDescription(
+                            "Identity couldn't be verified. Please don't take any actions to the hosting account.\n" +
+                                    "This procedure is only allowed up to three times.\n" +
+                                    "Transfer the ticket to the administration, if needed.");
+                    event.replyEmbeds(builder.build())
+                            .queue();
                     new SupportManager().sendMessageToCustomer(event.getChannel().getIdLong(), "Your identity couldn't be verified.");
                 }
             } else {
-                event.reply("Verification Code doesn't fit to the user.").queue();
+                EmbedBuilder builder = new EmbedBuilder();
+                builder.setColor(Color.cyan);
+                builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
+                builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+                builder.setDescription(
+                        "Verification Code doesn't fit to the user.");
+                event.replyEmbeds(builder.build())
+                        .queue();
                 new SupportManager().sendMessageToCustomer(event.getChannel().getIdLong(), "Your identity couldn't be verified.");
             }
         }
@@ -296,14 +544,13 @@ public class Support extends ListenerAdapter {
                 long id = event.getAuthor().getIdLong();
                 boolean bool = new SupportManager().hasPrioritySupport(id);
                 String msg = event.getMessage().getContentDisplay();
-                String ai = null;
+                String ai;
                 try {
                     ai = new SupportAI().find(msg).name().toUpperCase();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
                 try {
-                    String finalAi = ai;
                     new SupportManager().createSupportTicket(new TicketInformation() {
                         @Override
                         public long getUserID() {
@@ -322,14 +569,22 @@ public class Support extends ListenerAdapter {
 
                         @Override
                         public String aiCategorisation() {
-                            return finalAi;
+                            return ai;
                         }
                     });
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                event.getChannel().sendMessage("Ticket has been submitted.").queue();
-                event.getChannel().sendMessage("Type /answer to answer.").queue();
+                EmbedBuilder builder = new EmbedBuilder();
+                builder.setColor(Color.cyan);
+                builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
+                builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+                builder.setDescription(
+                        "Ticket has been submitted.\n" +
+                                "Type /answer to answer.");
+                event.getChannel().sendMessageEmbeds(builder.build())
+                        .queue();
             } else if(answering.containsKey(event.getAuthor().getIdLong())) {
                 answering.remove(event.getAuthor().getIdLong());
                 event.getMessage().addReaction(Emoji.fromUnicode("➡")).queue();
@@ -342,4 +597,5 @@ public class Support extends ListenerAdapter {
             }
         }
     }
+
 }

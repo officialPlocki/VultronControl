@@ -14,8 +14,11 @@ public class BotInfo extends ListenerAdapter {
         if(event.getName().equalsIgnoreCase("botinfo")) {
             EmbedBuilder builder = new EmbedBuilder();
             builder.setColor(Color.cyan);
+            builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
             builder.setDescription("This bot is developed by ELIZON. by Vultron Studios.\n" +
-                    "Support us: https://vultronstudios.net/discord");
+                    "Support us\n" +
+                    "Vultron Studios: https://vultronstudios.net/discord\n" +
+                    "ELIZON.: https://elizon.host/discord");
             builder.setAuthor("ELIZON.");
             builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
             event.replyEmbeds(builder.build()).setEphemeral(true).queue();

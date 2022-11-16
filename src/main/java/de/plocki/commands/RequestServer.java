@@ -8,6 +8,7 @@ import com.mattmalec.pterodactyl4j.application.managers.ServerCreationAction;
 import de.plocki.Main;
 import de.plocki.util.AccountManager;
 import de.plocki.util.Hooks;
+import de.plocki.util.LanguageUtil;
 import de.plocki.util.files.FileBuilder;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -35,34 +36,37 @@ public class RequestServer extends ListenerAdapter {
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
+        LanguageUtil util = new LanguageUtil();
+        LanguageUtil.lang lang = util.getUserLanguage(event.getInteraction().getUser().getIdLong());
         if(event.getName().equalsIgnoreCase("requestserver")) {
-            TextInput usage = TextInput.create("server_usage", "Usage", TextInputStyle.PARAGRAPH)
+            TextInput usage = TextInput.create("server_usage", util.getString("req_usage", lang), TextInputStyle.PARAGRAPH)
                     .setMinLength(20)
-                    .setPlaceholder("Describe for what you want to use the server.")
+                    .setPlaceholder(util.getString("req_usage_desc", lang))
                     .setRequired(true)
                     .setMaxLength(300)
                     .build();
             TextInput subdomain = TextInput.create("server_subdomain", "Subdomain", TextInputStyle.PARAGRAPH)
                     .setMinLength(4)
-                    .setMaxLength(12)
-                    .setPlaceholder("Wish for a subdomain with the vultron.network ending, write \"none\" for none.")
+                    .setMaxLength(16)
+                    .setPlaceholder(util.getString("req_subdomain_desc", lang))
                     .setRequired(true)
                     .build();
-            TextInput accept = TextInput.create("terms_accept", "LEGAL", TextInputStyle.PARAGRAPH)
+            TextInput accept = TextInput.create("terms_accept", util.getString("req_legal", lang), TextInputStyle.PARAGRAPH)
                     .setRequired(true)
                     .setMinLength(3)
                     .setMaxLength(3)
-                    .setPlaceholder("Do you accept the Privacy Policy and Terms of Use (/legal)?\nType \"YES\" to accept.")
+                    .setPlaceholder(util.getString("req_legal_desc", lang))
                     .build();
-            Modal modal = Modal.create("requestServer", "Server Request")
+            Modal modal = Modal.create("requestServer", "Server")
                     .addActionRows(ActionRow.of(usage), ActionRow.of(subdomain), ActionRow.of(accept)).build();
             if(!new AccountManager().hasAccount(event.getInteraction().getUser().getIdLong())) {
                 EmbedBuilder builder = new EmbedBuilder();
                 builder.setColor(Color.cyan);
+
                 builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
                 builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
-                builder.setDescription(
-                        "You must create a hosting account first.");
+                builder.setDescription(util.getString("accdel_notreg", lang));
                 event.replyEmbeds(builder.build())
                         .setEphemeral(true)
                         .queue();
@@ -74,13 +78,70 @@ public class RequestServer extends ListenerAdapter {
 
     public static final HashMap<Long, Boolean> usage = new HashMap<>();
 
+    public RequestServer() {
+        LanguageUtil util = new LanguageUtil();
+
+        util.setString("Describe for what you want to use the server.", "req_usage_desc", LanguageUtil.lang.EN);
+        util.setString("Beschreibe, für was du den Server nutzen möchtest.", "req_usage_desc", LanguageUtil.lang.DE);
+        util.setString("Usage", "req_usage", LanguageUtil.lang.EN);
+        util.setString("Nutzung", "req_usage", LanguageUtil.lang.DE);
+        util.setString("Wish for a subdomain with the vultron.network ending, write \"none\" for none.", "req_subdomain_desc", LanguageUtil.lang.EN);
+        util.setString("Wunsch für eine vultron.network subdomain, schreibe \"none\" für keine.", "req_subdomain_desc", LanguageUtil.lang.EN);
+        util.setString("LEGAL", "req_legal", LanguageUtil.lang.EN);
+        util.setString("RECHTLICHES", "req_legal", LanguageUtil.lang.DE);
+        util.setString("Subdomain is currently not available.", "req_answ_subdom_av", LanguageUtil.lang.EN);
+        util.setString("Die Subdomain ist aktuell nicht verfügbar.", "req_answ_subdom_av", LanguageUtil.lang.DE);
+        util.setString("Your request has been submitted with the ID #", "req_answ_req_submit", LanguageUtil.lang.EN);
+        util.setString("Deine Anfrage wurde unter der folgender ID gesendet: #", "req_answ_req_submit", LanguageUtil.lang.DE);
+        util.setString("Please write explicitly \"YES\" in uppercase to accept!\n" +
+                "You can read the conditions with /legal.", "req_legal_f", LanguageUtil.lang.EN);
+        util.setString("Bitte schreibe explizit \"YES\" in Großbuchstaben zum akzeptieren!\n" +
+                "Du kannst die Konditionen mit /legal lesen.", "req_legal_f", LanguageUtil.lang.DE);
+        util.setString("Your request with the ID #%ID% has been answered.\n" +
+                        "The request has been accepted and a server fitting to your request is being installed.",
+                "req_answ_install", LanguageUtil.lang.EN);
+        util.setString("Deine Anfrage mit der ID #%ID% wurde beantwortet.\n" +
+                        "Deine Anfrage wurde akzeptiert und ein passender Server wird gerade installiert.",
+                "req_answ_install", LanguageUtil.lang.DE);
+        util.setString("Do you accept the in /legal shown conditions?\nType \"YES\" to accept.", "req_legal_desc", LanguageUtil.lang.EN);
+        util.setString("Akzeptierst du die in /legal angegebenen Bedingungen?\nSchreibe \"YES\" zum akzeptieren.", "req_legal_desc", LanguageUtil.lang.DE);
+        util.setString("Your request with the ID %ID% has been answered.\n" +
+                        "The request has been declined because of insufficient descriptions about the usage.",
+                "req_answ_insuf", LanguageUtil.lang.EN);
+        util.setString("Deine Anfrage mit der ID #%ID% wurde beantwortet.\n" +
+                        "Deine beschriebene Nutzung war leider nicht ausreichend formuliert.",
+                "req_answ_insuf", LanguageUtil.lang.DE);
+        util.setString("Deine Anfrage mit der ID #%ID% wurde beantwortet.\n" +
+                        "Deine Anfrage wurde leider abgelehnt.\n" +
+                        "Du kannst es gerne noch einmal versuchen.",
+                "req_answ_dec", LanguageUtil.lang.DE);
+        util.setString("Your request with the ID #%ID% was answered.\n" +
+                        "Your request has been declined.\n" +
+                        "You can try it again, if you want.",
+                "req_answ_dec", LanguageUtil.lang.EN);
+        util.setString("Your request with the ID #%ID% has been answered.\n" +
+                        "\n" +
+                        "We liked your request.\n" +
+                        "We would like to have a short conversation with you to clarify everything else with you.\n" +
+                        "Please open a ticket with /support with the ID from above.",
+                "req_answ_custom", LanguageUtil.lang.EN);
+        util.setString("Deine Anfrage mit der ID #%ID% wurde beantwortet.\n" +
+                        "\n" +
+                        "Wir mögen deine Anfrage.\n" +
+                        "Wir würden uns gerne mit dir über dein Vorhaben unterhalten und mit dir alles nähere klären.\n" +
+                        "Bitte öffne ein Ticket mit /support und benenne dort die ID von der Anfrage.",
+                "req_answ_custom", LanguageUtil.lang.DE);
+    }
+
     @Override
     public void onModalInteraction(@NotNull ModalInteractionEvent event) {
+        LanguageUtil util = new LanguageUtil();
+        LanguageUtil.lang lang = util.getUserLanguage(event.getInteraction().getUser().getIdLong());
         if(event.getModalId().equals("requestServer")) {
-            if(event.getValue("terms_accept").getAsString().equals("YES")) {
+            if(Objects.requireNonNull(event.getValue("terms_accept")).getAsString().equals("YES")) {
                 AtomicBoolean c = new AtomicBoolean(false);
 
-                if(!event.getValue("server_subdomain").getAsString().equalsIgnoreCase("none")) {
+                if(!Objects.requireNonNull(event.getValue("server_subdomain")).getAsString().equalsIgnoreCase("none")) {
                     FileBuilder builder = new FileBuilder("servers");
                     List<String> list;
                     if(builder.getYaml().isSet("domains")) {
@@ -89,7 +150,7 @@ public class RequestServer extends ListenerAdapter {
                         list = new ArrayList<>();
                     }
                     list.forEach(s -> {
-                        if(s.equalsIgnoreCase(event.getValue("server_subdomain").getAsString())) c.set(true);
+                        if(s.equalsIgnoreCase(Objects.requireNonNull(event.getValue("server_subdomain")).getAsString())) c.set(true);
                     });
                     if(c.get()) {
                         EmbedBuilder b = new EmbedBuilder();
@@ -97,11 +158,10 @@ public class RequestServer extends ListenerAdapter {
                         b.setAuthor("ELIZON.");
                         b.setThumbnail(new Hooks().fromFile("thumbnailURL"));
                         b.setDescription(
-                                "Subdomain is currently not available.\n" +
+                                util.getString("req_answ_subdom_a", lang) + "\n" +
                                         "\n" +
-                                        "Your usage description:\n" +
                                         "\n" +
-                                        event.getValue("server_usage").getAsString() + "\n"
+                                        Objects.requireNonNull(event.getValue("server_usage")).getAsString() + "\n"
                                         );
                         event.replyEmbeds(b.build())
                                 .setEphemeral(true)
@@ -109,7 +169,6 @@ public class RequestServer extends ListenerAdapter {
                         return;
                     }
                 }
-
                 String uuid = UUID.randomUUID().toString();
                 Guild guild = Main.jda.getGuildById(new Hooks().fromFile("vultronGuildID"));
                 assert guild != null;
@@ -139,31 +198,17 @@ public class RequestServer extends ListenerAdapter {
                 b.setColor(Color.cyan);
                 b.setAuthor("ELIZON.");
                 b.setThumbnail(new Hooks().fromFile("thumbnailURL"));
-                b.setDescription(
-                        "Your request has been submitted with the ID #" + uuid + "\n" +
-                                "A copy of this message will be sent to you over DM.");
+                b.setDescription(util.getString("req_answ_req_submit", lang) + uuid);
                 event.replyEmbeds(b.build())
                         .setEphemeral(true)
                         .queue();
-                event.getInteraction().getUser().openPrivateChannel().queue(privateChannel -> {
-                    EmbedBuilder b2 = new EmbedBuilder();
-                    b2.setColor(Color.cyan);
-                    b2.setAuthor("ELIZON.");
-                    b2.setThumbnail(new Hooks().fromFile("thumbnailURL"));
-                    b2.setDescription(
-                            "Your request has been submitted with the ID #" + uuid);
-                    event.replyEmbeds(b2.build())
-                            .setEphemeral(true)
-                            .queue();
-                });
             } else {
                 EmbedBuilder builder = new EmbedBuilder();
                 builder.setColor(Color.cyan);
                 builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
                 builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
-                builder.setDescription(
-                        "Please write explicitly \"YES\" in uppercase to accept!\n" +
-                                "Legal: https://vultronstudios.net/legal");
+                builder.setDescription(util.getString("req_legal_f", lang));
                 event.replyEmbeds(builder.build())
                         .setEphemeral(true)
                         .queue();
@@ -173,6 +218,8 @@ public class RequestServer extends ListenerAdapter {
 
     @Override
     public void onSelectMenuInteraction(SelectMenuInteractionEvent event) {
+        LanguageUtil util = new LanguageUtil();
+        LanguageUtil.lang lang = util.getUserLanguage(event.getInteraction().getUser().getIdLong());
         if(!Objects.equals(event.getComponent().getId(), "chooseAnswer")) return;
         if(event.getValues().get(0).equals("server_low")) {
             MessageEmbed embed = event.getMessage().getEmbeds().get(0);
@@ -188,7 +235,11 @@ public class RequestServer extends ListenerAdapter {
             action.setDisk(1, DataType.GB);
             action.setAllocations(1);
             action.setMemory(1536, DataType.MB);
-            action.setName(embed.getFooter().getText());
+            if(!Objects.requireNonNull(embed.getFields().get(3).getValue()).equalsIgnoreCase("none")) {
+                action.setName(embed.getFields().get(3).getValue() + ".vultron.network");
+            } else {
+                action.setName(embed.getFooter().getText());
+            }
             action.setOwner(new Hooks().getPteroApplication().retrieveUsersByUsername(user.getIdLong() + "", true).execute().get(0));
             action.setSwap(128, DataType.MB);
 
@@ -207,7 +258,7 @@ public class RequestServer extends ListenerAdapter {
             action.setEgg(new Hooks().getPteroApplication().retrieveEggById(new Hooks().getPteroApplication().retrieveNestById(1).execute(), 2).execute());
             action.setStartupCommand("java -Xms128M -XX:MaxRAMPercentage=95.0 -Dterminal.jline=false -Dterminal.ansi=true -jar {{SERVER_JARFILE}}");
 
-            long id = action.execute().getIdLong();
+            String id = action.execute().getIdentifier();
 
             if(!Objects.requireNonNull(embed.getFields().get(3).getValue()).equalsIgnoreCase("none")) {
                 FileBuilder builder = new FileBuilder("servers");
@@ -219,9 +270,9 @@ public class RequestServer extends ListenerAdapter {
                 }
                 list.add(embed.getFields().get(3).getValue());
                 builder.getYaml().set("domains", list);
-                builder.getYaml().set(String.valueOf(id), embed.getFields().get(3).getValue());
+                builder.getYaml().set(id, embed.getFields().get(3).getValue());
                 builder.save();
-                ApplicationServer server = new Hooks().getPteroApplication().retrieveServersByName(embed.getFooter().getText(), true).execute().get(0);
+                ApplicationServer server = new Hooks().getServerByID(id);
                 ApplicationAllocation allocation = new Hooks().getPteroApplication().retrieveAllocationById(server.getDefaultAllocationIdLong()).execute();
                 String alias = allocation.getAlias();
                 int port = allocation.getPortInt();
@@ -236,19 +287,21 @@ public class RequestServer extends ListenerAdapter {
 
                 EmbedBuilder builder = new EmbedBuilder();
                 builder.setColor(Color.cyan);
+
                 builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
                 builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
-                builder.setDescription(
-                        "Your request with the ID " + embed.getFooter().getText() + " has been answered.\n" +
-                                "The request has been accepted and a server fitting to your request is being installed.\n" +
-                                "You should receive a E-Mail, when the server is ready.");
+
+                builder.setDescription(util.getString("req_answ_install", lang)
+                        .replaceAll("%ID%", Objects.requireNonNull(embed.getFooter().getText())));
                 privateChannel.sendMessageEmbeds(builder.build())
                         .queue();
             });
 
             EmbedBuilder builder = new EmbedBuilder();
             builder.setColor(Color.cyan);
-            builder.setAuthor("ELIZON.");
+                builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
             builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
             builder.setDescription(
                     "Answer has been transmitted.");
@@ -270,7 +323,11 @@ public class RequestServer extends ListenerAdapter {
             action.setDisk(1536, DataType.MB);
             action.setAllocations(1);
             action.setMemory(2048, DataType.MB);
-            action.setName(embed.getFooter().getText());
+            if(!Objects.requireNonNull(embed.getFields().get(3).getValue()).equalsIgnoreCase("none")) {
+                action.setName(embed.getFields().get(3).getValue() + ".vultron.network");
+            } else {
+                action.setName(embed.getFooter().getText());
+            }
             action.setOwner(new Hooks().getPteroApplication().retrieveUsersByUsername(user.getIdLong() + "", true).execute().get(0));
             action.setSwap(128, DataType.MB);
 
@@ -289,7 +346,7 @@ public class RequestServer extends ListenerAdapter {
             action.setEgg(new Hooks().getPteroApplication().retrieveEggById(new Hooks().getPteroApplication().retrieveNestById(1).execute(), 2).execute());
             action.setStartupCommand("java -Xms128M -XX:MaxRAMPercentage=95.0 -Dterminal.jline=false -Dterminal.ansi=true -jar {{SERVER_JARFILE}}");
 
-            long id = action.execute().getIdLong();
+            String id = action.execute().getIdentifier();
 
             if(!Objects.requireNonNull(embed.getFields().get(3).getValue()).equalsIgnoreCase("none")) {
                 FileBuilder builder = new FileBuilder("servers");
@@ -301,9 +358,9 @@ public class RequestServer extends ListenerAdapter {
                 }
                 list.add(embed.getFields().get(3).getValue());
                 builder.getYaml().set("domains", list);
-                builder.getYaml().set(String.valueOf(id), embed.getFields().get(3).getValue());
+                builder.getYaml().set(id, embed.getFields().get(3).getValue());
                 builder.save();
-                ApplicationServer server = new Hooks().getPteroApplication().retrieveServersByName(embed.getFooter().getText(), true).execute().get(0);
+                ApplicationServer server = new Hooks().getServerByID(id);
                 ApplicationAllocation allocation = new Hooks().getPteroApplication().retrieveAllocationById(server.getDefaultAllocationIdLong()).execute();
                 String alias = allocation.getAlias();
                 int port = allocation.getPortInt();
@@ -318,19 +375,20 @@ public class RequestServer extends ListenerAdapter {
 
                 EmbedBuilder builder = new EmbedBuilder();
                 builder.setColor(Color.cyan);
+
                 builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
                 builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
-                builder.setDescription(
-                        "Your request with the ID " + embed.getFooter().getText() + " has been answered.\n" +
-                                "The request has been accepted and a server fitting to your request is being installed.\n" +
-                                "You should receive a E-Mail, when the server is ready.");
+                builder.setDescription(util.getString("req_answ_install", lang)
+                        .replaceAll("%ID%", Objects.requireNonNull(embed.getFooter().getText())));
                 privateChannel.sendMessageEmbeds(builder.build())
                         .queue();
             });
 
             EmbedBuilder builder = new EmbedBuilder();
             builder.setColor(Color.cyan);
-            builder.setAuthor("ELIZON.");
+                builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
             builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
             builder.setDescription(
                     "Answer has been transmitted.");
@@ -352,7 +410,11 @@ public class RequestServer extends ListenerAdapter {
             action.setDisk(2048, DataType.MB);
             action.setAllocations(1);
             action.setMemory(2560, DataType.MB);
-            action.setName(embed.getFooter().getText());
+            if(!Objects.requireNonNull(embed.getFields().get(3).getValue()).equalsIgnoreCase("none")) {
+                action.setName(embed.getFields().get(3).getValue() + ".vultron.network");
+            } else {
+                action.setName(embed.getFooter().getText());
+            }
             action.setOwner(new Hooks().getPteroApplication().retrieveUsersByUsername(user.getIdLong() + "", true).execute().get(0));
             action.setSwap(128, DataType.MB);
 
@@ -371,7 +433,7 @@ public class RequestServer extends ListenerAdapter {
             action.setEgg(new Hooks().getPteroApplication().retrieveEggById(new Hooks().getPteroApplication().retrieveNestById(1).execute(), 2).execute());
             action.setStartupCommand("java -Xms128M -XX:MaxRAMPercentage=95.0 -Dterminal.jline=false -Dterminal.ansi=true -jar {{SERVER_JARFILE}}");
 
-            String id = action.execute().getDetailManager().execute().getName();
+            String id = action.execute().getIdentifier();
 
             if(!Objects.requireNonNull(embed.getFields().get(3).getValue()).equalsIgnoreCase("none")) {
                 FileBuilder builder = new FileBuilder("servers");
@@ -382,7 +444,7 @@ public class RequestServer extends ListenerAdapter {
                     list = new ArrayList<>();
                 }
                 String i;
-                ApplicationServer server = new Hooks().getPteroApplication().retrieveServersByName(embed.getFooter().getText(), true).execute().get(0);
+                ApplicationServer server = new Hooks().getServerByID(id);
                 ApplicationAllocation allocation = new Hooks().getPteroApplication().retrieveAllocationById(server.getDefaultAllocationIdLong()).execute();
                 String alias = allocation.getAlias();
                 int port = allocation.getPortInt();
@@ -403,19 +465,20 @@ public class RequestServer extends ListenerAdapter {
 
                 EmbedBuilder builder = new EmbedBuilder();
                 builder.setColor(Color.cyan);
+
                 builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
                 builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
-                builder.setDescription(
-                        "Your request with the ID " + embed.getFooter().getText() + " has been answered.\n" +
-                                "The request has been accepted and a server fitting to your request is being installed.\n" +
-                                "You should receive a E-Mail, when the server is ready.");
+                builder.setDescription(util.getString("req_answ_install", lang)
+                        .replaceAll("%ID%", Objects.requireNonNull(embed.getFooter().getText())));
                 privateChannel.sendMessageEmbeds(builder.build())
                         .queue();
             });
 
             EmbedBuilder builder = new EmbedBuilder();
             builder.setColor(Color.cyan);
-            builder.setAuthor("ELIZON.");
+                builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
             builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
             builder.setDescription(
                     "Answer has been transmitted.");
@@ -425,19 +488,19 @@ public class RequestServer extends ListenerAdapter {
         } else if(event.getValues().get(0).equals("insufficient")) {
             MessageEmbed embed = event.getMessage().getEmbeds().get(0);
             event.getChannel().sendMessage("Transmitting answer to request " + Objects.requireNonNull(embed.getFooter()).getText() + "...").queue();
-            User user = Main.jda.retrieveUserById(Objects.requireNonNull(embed.getAuthor().getName())).complete();
+            User user = Main.jda.retrieveUserById(Objects.requireNonNull(Objects.requireNonNull(embed.getAuthor()).getName())).complete();
 
 
             user.openPrivateChannel().queue(privateChannel -> {
 
                 EmbedBuilder builder = new EmbedBuilder();
                 builder.setColor(Color.cyan);
+
                 builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
                 builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
-                builder.setDescription(
-                        "Your request with the ID " + embed.getFooter().getText() + " has been answered.\n" +
-                                "The request has been declined because of insufficient descriptions about the usage.\n" +
-                                "You can request a server again at every time.");
+                builder.setDescription(util.getString("req_answ_insuf", lang)
+                        .replaceAll("%ID%", Objects.requireNonNull(embed.getFooter().getText())));
                 privateChannel.sendMessageEmbeds(builder.build())
                         .queue();
             });
@@ -445,6 +508,7 @@ public class RequestServer extends ListenerAdapter {
             EmbedBuilder builder = new EmbedBuilder();
             builder.setColor(Color.cyan);
             builder.setAuthor("ELIZON.");
+            builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
             builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
             builder.setDescription(
                     "Answer has been transmitted.");
@@ -459,19 +523,20 @@ public class RequestServer extends ListenerAdapter {
             user.openPrivateChannel().queue(privateChannel -> {
                 EmbedBuilder builder = new EmbedBuilder();
                 builder.setColor(Color.cyan);
+
                 builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
                 builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
-                builder.setDescription(
-                        "Your request with the ID " + embed.getFooter().getText() + " has been answered.\n" +
-                                "The request has been declined.\n" +
-                                "To get a higher chance of being accepted, please wait two or more days.");
+                builder.setDescription(util.getString("req_answ_dec", lang)
+                        .replaceAll("%ID%", Objects.requireNonNull(embed.getFooter().getText())));
                 privateChannel.sendMessageEmbeds(builder.build())
                         .queue();
             });
 
             EmbedBuilder builder = new EmbedBuilder();
             builder.setColor(Color.cyan);
-            builder.setAuthor("ELIZON.");
+                builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
             builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
             builder.setDescription(
                     "Answer has been transmitted.");
@@ -486,19 +551,20 @@ public class RequestServer extends ListenerAdapter {
             user.openPrivateChannel().queue(privateChannel -> {
                 EmbedBuilder builder = new EmbedBuilder();
                 builder.setColor(Color.cyan);
+
                 builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
                 builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
-                builder.setDescription(
-                        "Your request with the ID " + embed.getFooter().getText() + " has been answered.\n" +
-                                "The request has been declined.\n" +
-                                "You've currently to many servers or currently are no servers available.");
+                builder.setDescription(util.getString("req_answ_dec", lang)
+                        .replaceAll("%ID%", Objects.requireNonNull(embed.getFooter().getText())));
                 privateChannel.sendMessageEmbeds(builder.build())
                         .queue();
             });
 
             EmbedBuilder builder = new EmbedBuilder();
             builder.setColor(Color.cyan);
-            builder.setAuthor("ELIZON.");
+                builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
             builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
             builder.setDescription(
                     "Answer has been transmitted.");
@@ -507,27 +573,24 @@ public class RequestServer extends ListenerAdapter {
             event.getMessage().delete().queue();
         } else if(event.getValues().get(0).equals("custom")) {
             MessageEmbed embed = event.getMessage().getEmbeds().get(0);
-            event.getChannel().sendMessage("Transmitting answer to request " + Objects.requireNonNull(embed.getFooter()).getText() + "...").queue();
+            event.getChannel().sendMessage("Transmitting answer to request " + Objects.requireNonNull(embed.getFooter()).getText() + "... (Custom)").queue();
             User user = Main.jda.retrieveUserById(Objects.requireNonNull(Objects.requireNonNull(embed.getAuthor()).getName())).complete();
 
             user.openPrivateChannel().queue(privateChannel -> {
                 EmbedBuilder builder = new EmbedBuilder();
                 builder.setColor(Color.cyan);
                 builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
                 builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
-                builder.setDescription(
-                        "Your request with the ID " + embed.getFooter().getText() + " has been answered.\n" +
-                                "\n" +
-                                "We liked your request.\n" +
-                                "We would like to have a short conversation with you to clarify everything else with you.\n" +
-                                "Maybe we are also ready for a partnership with you :)");
+                builder.setDescription(util.getString("req_answ_custom", lang).replaceAll("%ID%", Objects.requireNonNull(embed.getFooter().getText())));
                 privateChannel.sendMessageEmbeds(builder.build())
                         .queue();
             });
 
             EmbedBuilder builder = new EmbedBuilder();
             builder.setColor(Color.cyan);
-            builder.setAuthor("ELIZON.");
+                builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
             builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
             builder.setDescription(
                     "Answer has been transmitted.");
@@ -542,19 +605,20 @@ public class RequestServer extends ListenerAdapter {
             user.openPrivateChannel().queue(privateChannel -> {
                 EmbedBuilder builder = new EmbedBuilder();
                 builder.setColor(Color.cyan);
+
                 builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
                 builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
-                builder.setDescription(
-                        "Your request with the ID " + embed.getFooter().getText() + " has been answered.\n" +
-                                "\n" +
-                                "Your subdomain is currently not available, not desired as it may be inappropriate or offensive.");
+                builder.setDescription(util.getString("req_answ_dec", lang)
+                        .replaceAll("%ID%", Objects.requireNonNull(embed.getFooter().getText())));
                 privateChannel.sendMessageEmbeds(builder.build())
                         .queue();
             });
 
             EmbedBuilder builder = new EmbedBuilder();
             builder.setColor(Color.cyan);
-            builder.setAuthor("ELIZON.");
+                builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
             builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
             builder.setDescription(
                     "Answer has been transmitted.");

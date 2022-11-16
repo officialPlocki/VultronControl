@@ -40,7 +40,9 @@ public class VerifyCode extends ListenerAdapter {
             if(!event.getValue("email").getAsString().contains("@")) {
                 EmbedBuilder builder = new EmbedBuilder();
                 builder.setColor(Color.cyan);
+
                 builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
                 builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
                 builder.setDescription(
                         "E-Mail isn't valid.");
@@ -50,7 +52,9 @@ public class VerifyCode extends ListenerAdapter {
             } else if(!new AccountManager().hasAccount(event.getInteraction().getUser().getIdLong())) {
                 EmbedBuilder builder = new EmbedBuilder();
                 builder.setColor(Color.cyan);
+
                 builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
                 builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
                 builder.setDescription(
                         "You're not registered.");
@@ -64,7 +68,9 @@ public class VerifyCode extends ListenerAdapter {
                     ident.put(uuid, event.getUser().getIdLong());
                     EmbedBuilder builder = new EmbedBuilder();
                     builder.setColor(Color.cyan);
-                    builder.setAuthor("ELIZON.");
+    
+                builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
                     builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
                     builder.setDescription(
                             "Your verification code is: " + uuid + "\nDon't send the code to any users.");
@@ -77,7 +83,9 @@ public class VerifyCode extends ListenerAdapter {
                     ident.put(uuid, event.getUser().getIdLong());
                     EmbedBuilder builder = new EmbedBuilder();
                     builder.setColor(Color.cyan);
-                    builder.setAuthor("ELIZON.");
+    
+                builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
                     builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
                     builder.setDescription(
                             "Your verification code is: " + uuid + "\nDon't send the code to any users.");

@@ -33,6 +33,8 @@ public class SupportManager {
         c.queue(textChannel -> {
             EmbedBuilder builder = new EmbedBuilder();
             builder.setTitle("Ticket from " + information.getUserID());
+            builder.setColor(Color.cyan);
+            builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
             builder.setDescription(information.getHelpReason());
             builder.addField("Prio-Support", "" + information.hasPrio(), true);
             try {
@@ -40,12 +42,15 @@ public class SupportManager {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+            builder.addField("Language", new LanguageUtil().getUserLanguage(information.getUserID()).name(), true);
             builder.setAuthor("" + information.getUserID());
-            builder.setFooter("Click first \"Claim\", than \"Welcome\".\nIf the Team member is switching, click first \"Transfer\" and then \"Claim\".\nDON'T DO ANY ACCOUNT CHANGES WITHOUT VERIFICATION!");
+            builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
+            builder.setFooter("Click first \"Claim\", than \"Welcome\".\nI" +
+                    "f the Team member is switching, click first \"Transfer\" and then \"Claim\".\n" +
+                    "DON'T DO ANY ACCOUNT CHANGES WITHOUT VERIFICATION!");
 
             SelectMenu menu = SelectMenu.create("supportSelection")
                     .addOption("Close ticket","close_" + information.getUserID())
-                    .addOption("Close ticket (inactive)","inactivity_close_" + information.getUserID())
                     .addOption("Transfer","transfer_" + information.getUserID())
                     .addOption("Claim","claim_" + information.getUserID())
                     .addOption("Send welcome message","welcome_message")
@@ -72,7 +77,7 @@ public class SupportManager {
             if(!guild.getTextChannelsByName(name, true).isEmpty()) {
                 String uuid = UUID.randomUUID().toString();
                 TextChannel channel = guild.getTextChannelsByName(name, true).get(0);
-                sendMessageToCustomer(channel.getIdLong(), "Thank you for contacting the Vultron Studios support.\nYour ticket is now closed because of inactivity.\nIf you have anything regarding to that ticket, name the following ID: **" + uuid + "**");
+                sendMessageToCustomer(channel.getIdLong(), "Thank you for contacting the Vultron Studios support.\nYour ticket is now closed because of inactivity.\nIf you have anything regarding to that ticket, name the following ID: " + uuid);
                 channel.getManager().setParent(guild.getCategoryById(new Hooks().fromFile("vultronTicketArchiveCategoryID"))).queue();
                 channel.getManager().setName("archived-" + channel.getName() + "_" + uuid).queue();
             }
@@ -83,7 +88,7 @@ public class SupportManager {
             if(!guild.getTextChannelsByName(name, true).isEmpty()) {
                 String uuid = UUID.randomUUID().toString();
                 TextChannel channel = guild.getTextChannelsByName(name, true).get(0);
-                sendMessageToCustomer(channel.getIdLong(), "Thank you for contacting the Vultron Studios support.\nYour ticket is now closed.\nIf you have anything regarding to that ticket, name the following ID: **" + uuid + "**");
+                sendMessageToCustomer(channel.getIdLong(), "Thank you for contacting the Vultron Studios support.\nYour ticket is now closed.\nIf you have anything regarding to that ticket, name the following ID: " + uuid);
                 channel.getManager().setParent(guild.getCategoryById(new Hooks().fromFile("vultronTicketArchiveCategoryID"))).queue();
                 channel.getManager().setName("archived-" + channel.getName() + "_" + uuid).queue();
             }
@@ -104,10 +109,11 @@ public class SupportManager {
 
         EmbedBuilder builder = new EmbedBuilder();
         builder.setColor(Color.cyan);
-        builder.setAuthor("Vultron Studios");
+        builder.setAuthor("ELIZON.");
         builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
         builder.setTitle("Answer to ticket #" + id);
         builder.setDescription(message);
+        builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
 
         user.openPrivateChannel().queue(privateChannel -> {
             privateChannel.sendMessageEmbeds(builder.build()).queue();
@@ -130,6 +136,7 @@ public class SupportManager {
         builder.setColor(Color.cyan);
         builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
         builder.setTitle("Answer from Customer");
+        builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
         builder.setDescription(message);
         channel.sendMessageEmbeds(builder.build()).queue();;
         return true;

@@ -1,16 +1,18 @@
 package de.plocki.util;
 
 import com.mattmalec.pterodactyl4j.PteroBuilder;
+import com.mattmalec.pterodactyl4j.application.entities.ApplicationServer;
 import com.mattmalec.pterodactyl4j.application.entities.PteroApplication;
 import de.plocki.util.files.FileBuilder;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.entity.ContentType;
 import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.util.EntityUtils;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class Hooks {
 
@@ -61,6 +63,16 @@ public class Hooks {
 
     public PteroApplication getPteroApplication() {
         return pteroApplication;
+    }
+
+    public ApplicationServer getServerByID(String identifier) {
+        AtomicReference<ApplicationServer> server = new AtomicReference<>(null);
+        pteroApplication.retrieveServers().all().execute().forEach(applicationServer -> {
+            if(applicationServer.getIdentifier().equals(identifier)) {
+                server.set(applicationServer);
+            }
+        });
+        return server.get();
     }
 
     public FileBuilder getFileBuilder() {

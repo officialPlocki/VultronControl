@@ -46,6 +46,7 @@ public class Main {
         jda.addEventListener(new Abuse());
         jda.addEventListener(new DeleteServer());
         jda.addEventListener(new VerifyCode());
+        jda.addEventListener(new Language());
 
         jda.retrieveCommands().queue(commands -> {
             commands.forEach(command -> {
@@ -55,6 +56,7 @@ public class Main {
             });
         });
 
+        jda.upsertCommand("language", "Change the preferred language of the bot.").queue();
         jda.upsertCommand("createaccount", "Create a hosting account").queue();
         jda.upsertCommand("support", "Get the support link").queue();
         jda.upsertCommand("requestserver", "Request a free minecraft server").queue();

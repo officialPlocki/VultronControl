@@ -1,10 +1,10 @@
 package de.plocki.commands;
 
-import com.mattmalec.pterodactyl4j.application.entities.ApplicationAllocation;
 import com.mattmalec.pterodactyl4j.application.entities.ApplicationServer;
 import de.plocki.Main;
 import de.plocki.util.AccountManager;
 import de.plocki.util.Hooks;
+import de.plocki.util.LanguageUtil;
 import de.plocki.util.files.FileBuilder;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -31,41 +31,44 @@ public class DeleteServer extends ListenerAdapter {
 
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
+        LanguageUtil util = new LanguageUtil();
+        LanguageUtil.lang lang = util.getUserLanguage(event.getInteraction().getUser().getIdLong());
         if(event.getName().equalsIgnoreCase("deleteserver")) {
             if(new AccountManager().hasAccount(event.getInteraction().getUser().getIdLong())) {
-                TextInput reason = TextInput.create("deletion_reason", "Reason for deletion", TextInputStyle.PARAGRAPH)
-                        .setPlaceholder("Why do you want to delete your server (Anonymous)?")
+                TextInput reason = TextInput.create("deletion_reason", util.getString("reason", lang), TextInputStyle.PARAGRAPH)
+                        .setPlaceholder(util.getString("survey_servdel_reason", lang))
                         .setRequired(false)
                         .setMaxLength(80)
-                        .setValue("Leave this here for nothing - remove for more information.")
+                        .setValue(util.getString("survey_servdel_reason", lang))
                         .build();
                 TextInput feedback = TextInput.create("deletion_feedback", "Feedback", TextInputStyle.PARAGRAPH)
-                        .setPlaceholder("Please give us feedback so that we can improve the service (Anonymous)")
+                        .setPlaceholder(util.getString("survey_servdel_feedback", lang))
                         .setRequired(false)
                         .setMaxLength(80)
-                        .setValue("Leave this here for nothing - remove for more information.")
+                        .setValue(util.getString("survey_servdel_feedback", lang))
                         .build();
-                TextInput serverID = TextInput.create("deletion_serverid", "Server Name", TextInputStyle.SHORT)
-                        .setPlaceholder("Enter the server name (more unique = faster deletion)")
+                TextInput serverID = TextInput.create("deletion_serverid", "Server ID", TextInputStyle.SHORT)
+                        .setPlaceholder(util.getString("servdel_name", lang))
                         .setRequired(true)
                         .setMinLength(32)
                         .build();
                 TextInput email = TextInput.create("deletion_email", "E-Mail", TextInputStyle.SHORT)
-                        .setPlaceholder("Enter your E-Mail of your ELIZON. account")
+                        .setPlaceholder(util.getString("servdel_email", lang))
                         .setRequired(true)
                         .setMinLength(1)
                         .build();
-                Modal modal = Modal.create("deletion", "Server Deletion")
+                Modal modal = Modal.create("deletion", util.getString("servdel", lang))
                         .addActionRows(ActionRow.of(reason), ActionRow.of(feedback), ActionRow.of(serverID), ActionRow.of(email))
                         .build();
                 event.replyModal(modal).queue();
             } else {
                 EmbedBuilder builder = new EmbedBuilder();
                 builder.setColor(Color.cyan);
+
                 builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
                 builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
-                builder.setDescription(
-                        "You don't have a ELIZON. account. Please register first!");
+                builder.setDescription(util.getString("accdel_notreg", lang));
                 event.replyEmbeds(builder.build())
                         .setEphemeral(true)
                         .queue();
@@ -75,10 +78,34 @@ public class DeleteServer extends ListenerAdapter {
 
     private static final HashMap<Long, String> ids = new HashMap<>();
     private static final HashMap<Long, String> emails = new HashMap<>();
+    public DeleteServer() {
+        LanguageUtil util = new LanguageUtil();
 
+        util.setString("Please tell us why you want to delete your server (Anonymous).","survey_servdel_reason", LanguageUtil.lang.EN);
+        util.setString("Bitte sage uns, warum du deinen Server löschen möchtest (Anonym).", "survey_servdel_reason", LanguageUtil.lang.DE);
+        util.setString("What can we do better next time (Anonymous)?", "survey_servdel_feedback", LanguageUtil.lang.EN);
+        util.setString("Was können wir das nächstes mal Verbessern (Anonym)?", "survey_servdel_feedback", LanguageUtil.lang.DE);
+        util.setString("Server deletion", "servdel", LanguageUtil.lang.EN);
+        util.setString("Server Löschung", "servdel", LanguageUtil.lang.DE);
+        util.setString("Please enter your E-Mail for confirmation.", "servdel_email", LanguageUtil.lang.EN);
+        util.setString("Bitte gebe deine E-Mail zur Bestätigung ein.", "servdel_email", LanguageUtil.lang.DE);
+        util.setString("Enter the Server ID", "servdel_name", LanguageUtil.lang.EN);
+        util.setString("Schreibe hier die Server ID herein", "servdel_name", LanguageUtil.lang.DE);
+        util.setString("Server has been deleted.", "servdel_confirm_information", LanguageUtil.lang.EN);
+        util.setString("Server wurde gelöscht.", "servdel_confirm_information", LanguageUtil.lang.DE);
+        util.setString("You can only delete your own servers.", "servdel_fail_own", LanguageUtil.lang.EN);
+        util.setString("Du kannst nur deine eigenen Server löschen.", "servdel_fail_own", LanguageUtil.lang.DE);
+        util.setString("Please confirm your decision.\n" +
+                "Your server and subdomain (if given) will be deleted immediately and permanently removed with all data.", "servdel_confirm", LanguageUtil.lang.EN);
+        util.setString("Bitte bestätige deine Entscheidung.\n" +
+                "Dein Server und Subdomain (wenn vergeben) werden direkt und permanent mit allen Daten gelöscht.", "servdel_confirm", LanguageUtil.lang.DE);
+
+    }
     @Override
     public void onModalInteraction(@NotNull ModalInteractionEvent event) {
         if(event.getModalId().equalsIgnoreCase("deletion")) {
+            LanguageUtil util = new LanguageUtil();
+            LanguageUtil.lang lang = util.getUserLanguage(event.getInteraction().getUser().getIdLong());
             Guild guild = Main.jda.getGuildById(new Hooks().fromFile("vultronGuildID"));
             assert guild != null;
             TextChannel channel = guild.getTextChannelById(new Hooks().fromFile("vultronGuildCloseChannelID"));
@@ -92,30 +119,31 @@ public class DeleteServer extends ListenerAdapter {
             assert channel != null;
             channel.sendMessageEmbeds(builder.build()).queue();
 
-            ids.put(event.getInteraction().getUser().getIdLong(),  event.getValue("deletion_serverid").getAsString());
-            emails.put(event.getInteraction().getUser().getIdLong(),  event.getValue("deletion_email").getAsString());
+            ids.put(event.getInteraction().getUser().getIdLong(),  Objects.requireNonNull(event.getValue("deletion_serverid")).getAsString());
+            emails.put(event.getInteraction().getUser().getIdLong(),  Objects.requireNonNull(event.getValue("deletion_email")).getAsString());
 
             EmbedBuilder b = new EmbedBuilder();
             b.setColor(Color.cyan);
             b.setAuthor("ELIZON.");
             b.setThumbnail(new Hooks().fromFile("thumbnailURL"));
-            b.setDescription(
-                    "Please confirm your decision. Your server and subdomain (if given) will be deleted immediately and permanently removed with all data.");
+            b.setDescription(util.getString("servdel_confirm", lang));
             event.replyEmbeds(b.build())
                     .setEphemeral(true)
-                    .addActionRow(Button.danger("deletion_delete", "Confirm deletion"))
+                    .addActionRow(Button.danger("deletion_delete", "»"))
                     .queue();
         }
     }
 
     @Override
     public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
+        LanguageUtil util = new LanguageUtil();
+        LanguageUtil.lang lang = util.getUserLanguage(event.getInteraction().getUser().getIdLong());
         if(event.getButton().getId().equals("deletion_delete")) {
             String id = ids.get(event.getInteraction().getUser().getIdLong());
             String email = emails.get(event.getInteraction().getUser().getIdLong());
             ids.remove(event.getInteraction().getUser().getIdLong());
             emails.remove(event.getInteraction().getUser().getIdLong());
-            ApplicationServer server = new Hooks().getPteroApplication().retrieveServersByName(id, true).execute().get(0);
+            ApplicationServer server = new Hooks().getServerByID(id);
             if(new Hooks().getPteroApplication().retrieveUserById(server.getOwnerIdLong()).execute().getEmail().equalsIgnoreCase(email)) {
                 if(String.valueOf(event.getInteraction().getUser().getIdLong()).equals(new Hooks().getPteroApplication().retrieveUserById(server.getOwnerIdLong()).execute().getUserName())) {
                     server.getController().suspend().execute();
@@ -144,12 +172,33 @@ public class DeleteServer extends ListenerAdapter {
                         }
                     }
 
-                    event.reply("Server deleted.").setEphemeral(true).queue();
+                    EmbedBuilder b = new EmbedBuilder();
+                    b.setColor(Color.cyan);
+                    b.setAuthor("ELIZON.");
+                    b.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+                    b.setDescription(util.getString("servdel_confirm_information", lang));
+                    event.replyEmbeds(b.build())
+                            .setEphemeral(true)
+                            .queue();
                 } else {
-                    event.reply("You can only delete your own servers.").setEphemeral(true).queue();
+                    EmbedBuilder b = new EmbedBuilder();
+                    b.setColor(Color.cyan);
+                    b.setAuthor("ELIZON.");
+                    b.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+                    b.setDescription(util.getString("servdel_fail_own", lang));
+                    event.replyEmbeds(b.build())
+                            .setEphemeral(true)
+                            .queue();
                 }
             } else {
-                event.reply("The information does not match the stored data.").setEphemeral(true).queue();
+                EmbedBuilder b = new EmbedBuilder();
+                b.setColor(Color.cyan);
+                b.setAuthor("ELIZON.");
+                b.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+                b.setDescription(util.getString("accdel_dataf", lang));
+                event.replyEmbeds(b.build())
+                        .setEphemeral(true)
+                        .queue();
             }
         }
     }

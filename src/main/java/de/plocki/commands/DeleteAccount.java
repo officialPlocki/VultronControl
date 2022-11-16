@@ -5,6 +5,7 @@ import com.mattmalec.pterodactyl4j.application.entities.ApplicationUser;
 import de.plocki.Main;
 import de.plocki.util.AccountManager;
 import de.plocki.util.Hooks;
+import de.plocki.util.LanguageUtil;
 import de.plocki.util.files.FileBuilder;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -29,41 +30,75 @@ import java.util.function.BooleanSupplier;
 
 public class DeleteAccount extends ListenerAdapter {
 
+    public DeleteAccount() {
+        LanguageUtil util = new LanguageUtil();
+
+        util.setString("Please tell us why you want to delete your account (Anonymous).","survey_accdel_reason", LanguageUtil.lang.EN);
+        util.setString("Bitte sage uns, warum du deinen Account löschen möchtest (Anonym).", "survey_accdel_reason", LanguageUtil.lang.DE);
+        util.setString("What can we do better next time (Anonymous)?", "survey_accdel_feedback", LanguageUtil.lang.EN);
+        util.setString("Was können wir das nächstes mal Verbessern (Anonym)?", "survey_accdel_feedback", LanguageUtil.lang.DE);
+        util.setString("Reason", "reason", LanguageUtil.lang.EN);
+        util.setString("Grund", "reason", LanguageUtil.lang.DE);
+        util.setString("Account deletion", "accdel", LanguageUtil.lang.EN);
+        util.setString("Konto Löschung", "accdel", LanguageUtil.lang.DE);
+        util.setString("Please enter your E-Mail for confirmation.", "accdel_email", LanguageUtil.lang.EN);
+        util.setString("Bitte gebe deine E-Mail zur Bestätigung ein.", "accdel_email", LanguageUtil.lang.DE);
+        util.setString(
+                "Do you really want do delete your ELIZON. Account?\n" +
+                        "All servers and data will be permanently deleted.",
+                "accdel_information", LanguageUtil.lang.EN);
+        util.setString("Möchtest du wirklich dein ELIZON. Nutzerkonto löschen?\n" +
+                "Alle Server und Daten werden permanent gelöscht.", "accdel_information", LanguageUtil.lang.DE);
+        util.setString("The information does not match the stored data.", "accdel_dataf", LanguageUtil.lang.EN);
+        util.setString("Die angegebenen Informationen passen nicht zu den gespeicherten Daten.", "accdel_dataf", LanguageUtil.lang.DE);
+        util.setString("You aren't registered.", "accdel_notreg", LanguageUtil.lang.EN);
+        util.setString("Du besitzt kein ELIZON. Konto.", "accdel_notreg", LanguageUtil.lang.DE);
+        util.setString("Your account is now deleted.\n" +
+                "If you have further questions, please contact us over /support or write us a E-Mail to support@vultronstudios.net.\n" +
+                "Your account deletion will be confirmed via E-Mail as soon as possible.", "accdel_confirm", LanguageUtil.lang.EN);
+        util.setString("Dein Konto ist jetzt gelöscht.\n" +
+                "Falls du weitere Fragen hast, kontaktiere uns über /support oder per E-Mail an support@vultronstudios.net.\n" +
+                "Deine Kontolöschung wird dir zum nächst möglichen Zeitpunkt per E-Mail bestätigt.", "accdel_confirm", LanguageUtil.lang.DE);
+    }
+
     @Override
     public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
         if (event.getName().equalsIgnoreCase("deleteaccount")) {
-            TextInput reason = TextInput.create("accdel_reason", "Reason", TextInputStyle.PARAGRAPH)
+            LanguageUtil util = new LanguageUtil();
+            LanguageUtil.lang lang = util.getUserLanguage(event.getInteraction().getUser().getIdLong());
+            TextInput reason = TextInput.create("accdel_reason", util.getString("reason", lang), TextInputStyle.PARAGRAPH)
                     .setMaxLength(80)
                     .setRequired(false)
-                    .setPlaceholder("Please tell us why you want to delete your account (Anonymous).")
-                    .setValue("Leave this here for nothing - remove for more information.")
+                    .setPlaceholder(util.getString("survey_accdel_reason", lang))
+                    .setValue(util.getString("survey_accdel_reason", lang))
                     .build();
             TextInput feedback = TextInput.create("accdel_feedback", "Feedback", TextInputStyle.PARAGRAPH)
                     .setMaxLength(80)
                     .setRequired(false)
-                    .setPlaceholder("What can we do better next time? (Anonymous)")
-                    .setValue("Leave this here for nothing - remove for more information.")
+                    .setPlaceholder(util.getString("survey_accdel_feedback", lang))
+                    .setValue(util.getString("survey_accdel_feedback", lang))
                     .build();
             TextInput email = TextInput.create("accdel_email", "E-Mail", TextInputStyle.PARAGRAPH)
                     .setRequired(true)
                     .setMinLength(1)
-                    .setPlaceholder("Please enter your E-Mail for confirmation.")
+                    .setPlaceholder(util.getString("accdel_email", lang))
                     .build();
-            Modal modal = Modal.create("accdel", "Delete Account")
+            Modal modal = Modal.create("accdel", util.getString("accdel", lang))
                     .addActionRows(ActionRow.of(reason), ActionRow.of(feedback), ActionRow.of(email))
                     .build();
             event.replyModal(modal).queue();
         }
     }
 
-    private static HashMap<Long, String> emails = new HashMap<>();
+    private static final HashMap<Long, String> emails = new HashMap<>();
 
     @Override
     public void onModalInteraction(@NotNull ModalInteractionEvent event) {
         if(event.getModalId().equals("accdel")) {
+            LanguageUtil util = new LanguageUtil();
+            LanguageUtil.lang lang = util.getUserLanguage(event.getInteraction().getUser().getIdLong());
             if(new AccountManager().hasAccount(event.getInteraction().getUser().getIdLong())) {
                 if(event.getValue("accdel_email").getAsString().equals(new Hooks().getPteroApplication().retrieveUsersByUsername(event.getInteraction().getUser().getIdLong() + "", true).execute().get(0).getEmail())) {
-
                     Guild guild = Main.jda.getGuildById(new Hooks().fromFile("vultronGuildID"));
                     assert guild != null;
                     TextChannel channel = guild.getTextChannelById(new Hooks().fromFile("vultronGuildCloseAccountChannelID"));
@@ -71,6 +106,7 @@ public class DeleteAccount extends ListenerAdapter {
                     builder.setTitle("Account deletion survey");
                     builder.setColor(Color.cyan);
                     builder.setAuthor("ELIZON.");
+                    builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
                     builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
                     builder.addField("Deletion reason", event.getValue("accdel_reason").getAsString(), true);
                     builder.addField("Feedback", event.getValue("accdel_feedback").getAsString(), true);
@@ -83,32 +119,18 @@ public class DeleteAccount extends ListenerAdapter {
                     b.setColor(Color.cyan);
                     b.setAuthor("ELIZON.");
                     b.setThumbnail(new Hooks().fromFile("thumbnailURL"));
-                    b.setDescription(
-                            "We're sorry to hear that you want to delete your account.\n" +
-                                    "Your ELIZON. account will be deleted after confirmation.\n" +
-                                    "You can create a new account at any time.\n" +
-                                    "Your data will be deleted.\n" +
-                                    "However, data may only be deleted at a later point in time if they are subject to a retention obligation.\n" +
-                                    "We may and will only delete these after the period of the respective period has expired.\n" +
-                                    "Therefore, please do not open a support ticket.\n" +
-                                    "We ask for your understanding.\n" +
-                                    "If you delete your account, you terminate the contract between you and us without notice.\n" +
-                                    "\n" +
-                                    "Please confirm now your account deletion and that you have understood the information above.\n" +
-                                    "Your account and servers will be deleted permanently without any chance to recover it.\n" +
-                                    "Please save your servers, if you didn't already.\n" +
-                                    "Your support tickets will not be deleted. If you want that we delete your tickets too, please open a support ticket or write a E-Mail to support@vultronstudios.net.");
+                    b.setDescription(util.getString("accdel_information", lang));
                     event.replyEmbeds(b.build())
                             .setEphemeral(true)
-                            .addActionRow(Button.danger("accdel_confirm", "Confirm deletion"))
+                            .addActionRow(Button.danger("accdel_confirm", "»"))
                             .queue();
                 } else {
                     EmbedBuilder builder = new EmbedBuilder();
                     builder.setColor(Color.cyan);
                     builder.setAuthor("ELIZON.");
+                    builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
                     builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
-                    builder.setDescription(
-                            "The information does not match the stored data.");
+                    builder.setDescription(util.getString("accdel_dataf", lang));
                     event.replyEmbeds(builder.build())
                             .setEphemeral(true)
                             .queue();
@@ -117,9 +139,9 @@ public class DeleteAccount extends ListenerAdapter {
                 EmbedBuilder builder = new EmbedBuilder();
                 builder.setColor(Color.cyan);
                 builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
                 builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
-                builder.setDescription(
-                        "You aren't registered.");
+                builder.setDescription(util.getString("accdel_notreg", lang));
                 event.replyEmbeds(builder.build())
                         .setEphemeral(true)
                         .queue();
@@ -129,6 +151,8 @@ public class DeleteAccount extends ListenerAdapter {
 
     @Override
     public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
+        LanguageUtil util = new LanguageUtil();
+        LanguageUtil.lang lang = util.getUserLanguage(event.getInteraction().getUser().getIdLong());
         if(event.getButton().getId().equals("accdel_confirm")) {
             ApplicationUser user = new Hooks().getPteroApplication().retrieveUsersByEmail(emails.get(event.getInteraction().getUser().getIdLong()), true).execute().get(0);
             emails.remove(event.getInteraction().getUser().getIdLong());
@@ -167,6 +191,7 @@ public class DeleteAccount extends ListenerAdapter {
             builder.setTitle("Account deletion confirmation request");
             builder.setColor(Color.cyan);
             builder.setAuthor("ELIZON.");
+            builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
             builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
             builder.addField("E-Mail", user.getEmail(), true);
             builder.addField("Username", user.getUserName(), true);
@@ -186,10 +211,7 @@ public class DeleteAccount extends ListenerAdapter {
             b.setColor(Color.cyan);
             b.setAuthor("ELIZON.");
             b.setThumbnail(new Hooks().fromFile("thumbnailURL"));
-            b.setDescription(
-                    "Your account is now deleted.\n" +
-                            "If you have further questions, please contact us over /support or write us a E-Mail to support@vultronstudios.net.\n" +
-                            "Your account deletion will be confirmed via E-Mail as soon as possible.");
+            b.setDescription(util.getString("accdel_confirm", lang));
             event.replyEmbeds(b.build())
                     .setEphemeral(true)
                     .queue();
