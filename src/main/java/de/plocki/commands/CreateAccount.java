@@ -31,11 +31,11 @@ public class CreateAccount extends ListenerAdapter {
         util.setString("Klicke hier um deine Anmeldedaten zu erhalten.", "createaccount_view", LanguageUtil.lang.DE);
         util.setString("Please change the password after login and enable 2-FA if you want (recommended).", "createaccount_cred", LanguageUtil.lang.EN);
         util.setString("Bitte ändere das Passwort nach der Anmeldung und aktiviere 2-FA, für extra Sicherheit (empfohlen).", "createaccount_cred", LanguageUtil.lang.DE);
-        util.setString("Privacy Policy, Special Conditions ELIZON.BOT & Terms of Use (ELIZON. section): https://vultronstudios.net/legal\n" +
-                        "Do you accept the Privacy Policy, Special Conditions ELIZON.BOT and Terms of Use (ELIZON. section)?",
+        util.setString("Privacy Policy: https://vultronstudios.net/legal\n Terms of Use: https://elizon.host/en/tou\nSpecial Conditions ELIZON.BOT: https://elizon.host/en/specialconditions\n" +
+                        "Do you accept the Privacy Policy, Special Conditions ELIZON.BOT and Terms of Use?",
                 "terms_accept", LanguageUtil.lang.EN);
-        util.setString("Datenschutzerklärung, Gesonderte Bedingungen ELIZON.BOT & Nutzungsbedingungen (ELIZON. Sektion): https://vultronstudios.net/legal\n" +
-                        "Akzeptierst du die Datenschutzerklärung, Gesonderten Bedingungen ELIZON.BOT und Nutzungsbedingungen (ELIZON. Sektion)?",
+        util.setString("Datenschutzbedingungen: https://vultronstudios.net/legal\n Nutzungsbedingungen: https://elizon.host/de/tou\nGesonderte Bedingungen ELIZON.BOT: https://elizon.host/de/specialconditions\n" +
+                        "Akzeptierst du die Datenschutzerklärung, Gesonderte Bedingungen ELIZON.BOT und Nutzungsbedingungen?",
                 "terms_accept", LanguageUtil.lang.DE);
         util.setString("Okay, we're sorry to hear that.", "int_sorry", LanguageUtil.lang.EN);
         util.setString("Okay, das tut uns leid.", "int_sorry", LanguageUtil.lang.DE);

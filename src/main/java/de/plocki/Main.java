@@ -16,6 +16,8 @@ public class Main {
 
     public static void main(String[] args) throws LoginException {
         if(!new Hooks().getFileBuilder().getYaml().isSet("vultronGuildID")) new Hooks().toFile("vultronGuildID", "0123456789");
+        if(!new Hooks().getFileBuilder().getYaml().isSet("vultronGuildSupportChannelID")) new Hooks().toFile("vultronGuildSupportChannelID", "0123456789");
+        if(!new Hooks().getFileBuilder().getYaml().isSet("vultronGuildAdminChannelID")) new Hooks().toFile("vultronGuildAdminChannelID", "0123456789");
         if(!new Hooks().getFileBuilder().getYaml().isSet("vultronBoosterID")) new Hooks().toFile("vultronBoosterID", "0123456789");
         if(!new Hooks().getFileBuilder().getYaml().isSet("vultronBoosterID2")) new Hooks().toFile("vultronBoosterID2", "0123456789");
         if(!new Hooks().getFileBuilder().getYaml().isSet("vultronGuildChannelID")) new Hooks().toFile("vultronGuildChannelID", "0123456789");
@@ -47,14 +49,6 @@ public class Main {
         jda.addEventListener(new DeleteServer());
         jda.addEventListener(new VerifyCode());
         jda.addEventListener(new Language());
-
-        jda.retrieveCommands().queue(commands -> {
-            commands.forEach(command -> {
-                if(command.getName().equals("privacypolicy")) {
-                    jda.deleteCommandById(command.getId()).queue();
-                }
-            });
-        });
 
         jda.upsertCommand("language", "Change the preferred language of the bot.").queue();
         jda.upsertCommand("createaccount", "Create a hosting account").queue();

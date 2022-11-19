@@ -54,10 +54,10 @@ public class DeleteAccount extends ListenerAdapter {
         util.setString("You aren't registered.", "accdel_notreg", LanguageUtil.lang.EN);
         util.setString("Du besitzt kein ELIZON. Konto.", "accdel_notreg", LanguageUtil.lang.DE);
         util.setString("Your account is now deleted.\n" +
-                "If you have further questions, please contact us over /support or write us a E-Mail to support@vultronstudios.net.\n" +
+                "If you have further questions, please contact us over /support or write us a E-Mail to support@elizon.host.\n" +
                 "Your account deletion will be confirmed via E-Mail as soon as possible.", "accdel_confirm", LanguageUtil.lang.EN);
         util.setString("Dein Konto ist jetzt gelöscht.\n" +
-                "Falls du weitere Fragen hast, kontaktiere uns über /support oder per E-Mail an support@vultronstudios.net.\n" +
+                "Falls du weitere Fragen hast, kontaktiere uns über /support oder per E-Mail an support@elizon.host.\n" +
                 "Deine Kontolöschung wird dir zum nächst möglichen Zeitpunkt per E-Mail bestätigt.", "accdel_confirm", LanguageUtil.lang.DE);
     }
 
@@ -186,7 +186,7 @@ public class DeleteAccount extends ListenerAdapter {
 
             Guild guild = Main.jda.getGuildById(new Hooks().fromFile("vultronGuildID"));
             assert guild != null;
-            TextChannel channel = guild.getTextChannelById(new Hooks().fromFile("vultronGuildChannelID"));
+            TextChannel channel = guild.getTextChannelById(new Hooks().fromFile("vultronGuildAdminChannelID"));
             EmbedBuilder builder = new EmbedBuilder();
             builder.setTitle("Account deletion confirmation request");
             builder.setColor(Color.cyan);

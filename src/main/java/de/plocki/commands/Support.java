@@ -2,7 +2,6 @@ package de.plocki.commands;
 
 import com.mattmalec.pterodactyl4j.DataType;
 import com.mattmalec.pterodactyl4j.application.entities.ApplicationServer;
-import com.mattmalec.pterodactyl4j.application.entities.ApplicationUser;
 import de.plocki.Main;
 import de.plocki.ai.SupportAI;
 import de.plocki.util.Hooks;
@@ -10,6 +9,8 @@ import de.plocki.util.LanguageUtil;
 import de.plocki.util.SupportManager;
 import de.plocki.util.TicketInformation;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -272,7 +273,11 @@ public class Support extends ListenerAdapter {
                             .queue();
                     return;
                 }
-                TextInput input = TextInput.create("verifyCode", "Identification", TextInputStyle.SHORT).build();
+                TextInput input = TextInput.create("verifyCode", "Identification", TextInputStyle.SHORT)
+                        .setMinLength(6)
+                        .setMaxLength(6)
+                        .setRequired(true)
+                        .build();
                 Modal modal = Modal.create("verificationIdent", "Identification")
                         .addActionRow(input)
                         .build();
@@ -369,6 +374,16 @@ public class Support extends ListenerAdapter {
                     .queue();
 
             new SupportManager().sendMessageToCustomer(event.getChannel().getIdLong(), "The database limit has been increased.");
+        } else if(event.getButton().getId().startsWith("feedback_")) {
+            TextInput input = TextInput.create("text", "Feedback", TextInputStyle.PARAGRAPH)
+                    .setRequired(true)
+                    .setPlaceholder("How was your experience today?")
+                    .setMinLength(5)
+                    .setMaxLength(300)
+                    .build();
+
+            Modal modal = Modal.create(event.getButton().getId(), "Feedback").build();
+            event.replyModal(modal).queue();
         }
     }
 
@@ -483,7 +498,7 @@ public class Support extends ListenerAdapter {
                 }
             }
         } else if(event.getModalId().equals("verificationIdent")) {
-            String id = Objects.requireNonNull(event.getValue("verifyCode")).getAsString();
+            long id = Long.parseLong(Objects.requireNonNull(event.getValue("verifyCode")).getAsString());
             if(VerifyCode.ident.get(id).equals(Long.parseLong(event.getChannel().getName()))) {
                 if(VerifyCode.codes.get(id)) {
                     VerifyCode.codes.remove(id);
@@ -531,6 +546,33 @@ public class Support extends ListenerAdapter {
                         .queue();
                 new SupportManager().sendMessageToCustomer(event.getChannel().getIdLong(), "Your identity couldn't be verified.");
             }
+        } else if(event.getModalId().startsWith("feedback_")) {
+            String uuid = event.getModalId().replaceAll("feedback_", "");
+            try {
+                EmbedBuilder builder = new EmbedBuilder();
+                builder.setColor(Color.cyan);
+                builder.setAuthor("ELIZON.");
+                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
+                builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+                builder.setDescription(
+                        "Thanks for your feedback. If you have anything to add, just click \"Feedback\" again.");
+                event.replyEmbeds(builder.build())
+                        .queue();
+            } catch (Exception ignored) {}
+
+            Guild guild = Main.jda.getGuildById(new Hooks().fromFile("vultronGuildID"));
+            assert guild != null;
+            TextChannel channel = guild.getTextChannelById(new Hooks().fromFile("vultronGuildSupportChannelID"));
+            EmbedBuilder builder = new EmbedBuilder();
+            builder.setTitle("Support survey");
+            builder.setColor(Color.cyan);
+            builder.setAuthor("ELIZON.");
+            builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
+            builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+            builder.addField("Ticket-ID", uuid, true);
+            builder.addField("Feedback", event.getValue("text").getAsString(), true);
+            assert channel != null;
+            channel.sendMessageEmbeds(builder.build()).queue();
         }
     }
 

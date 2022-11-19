@@ -13,12 +13,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class VerifyCode extends ListenerAdapter {
 
-    public static final HashMap<String, Boolean> codes = new HashMap<>();
-    public static final HashMap<String, Long> ident = new HashMap<>();
+    public static final HashMap<Long, Boolean> codes = new HashMap<>();
+    public static final HashMap<Long, Long> ident = new HashMap<>();
 
     @Override
     public void onSlashCommandInteraction(@NotNull SlashCommandInteractionEvent event) {
@@ -63,14 +65,14 @@ public class VerifyCode extends ListenerAdapter {
                         .queue();
             } else {
                 if(new Hooks().getPteroApplication().retrieveUsersByUsername(event.getInteraction().getUser().getId(), true).execute().get(0).getEmail().equalsIgnoreCase(event.getValue("email").getAsString())) {
-                    String uuid = UUID.randomUUID().toString();
+                    long uuid = ThreadLocalRandom.current().nextInt(100000, 999999);
                     codes.put(uuid, true);
                     ident.put(uuid, event.getUser().getIdLong());
                     EmbedBuilder builder = new EmbedBuilder();
                     builder.setColor(Color.cyan);
     
-                builder.setAuthor("ELIZON.");
-                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
+                    builder.setAuthor("ELIZON.");
+                    builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
                     builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
                     builder.setDescription(
                             "Your verification code is: " + uuid + "\nDon't send the code to any users.");
@@ -78,14 +80,14 @@ public class VerifyCode extends ListenerAdapter {
                             .setEphemeral(true)
                             .queue();
                 } else {
-                    String uuid = UUID.randomUUID().toString();
+                    long uuid = ThreadLocalRandom.current().nextInt(100000, 999999);
                     codes.put(uuid, false);
                     ident.put(uuid, event.getUser().getIdLong());
                     EmbedBuilder builder = new EmbedBuilder();
                     builder.setColor(Color.cyan);
     
-                builder.setAuthor("ELIZON.");
-                builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
+                    builder.setAuthor("ELIZON.");
+                    builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
                     builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
                     builder.setDescription(
                             "Your verification code is: " + uuid + "\nDon't send the code to any users.");

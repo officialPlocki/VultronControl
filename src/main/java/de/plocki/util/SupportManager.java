@@ -4,6 +4,7 @@ import de.plocki.Main;
 import de.plocki.commands.Support;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.interactions.components.selections.SelectMenu;
 import net.dv8tion.jda.api.requests.restaction.ChannelAction;
 
@@ -77,7 +78,7 @@ public class SupportManager {
             if(!guild.getTextChannelsByName(name, true).isEmpty()) {
                 String uuid = UUID.randomUUID().toString();
                 TextChannel channel = guild.getTextChannelsByName(name, true).get(0);
-                sendMessageToCustomer(channel.getIdLong(), "Thank you for contacting the Vultron Studios support.\nYour ticket is now closed because of inactivity.\nIf you have anything regarding to that ticket, name the following ID: " + uuid);
+                sendMessageToCustomer(channel.getIdLong(), "Thank you for contacting the Vultron Studios support.\nYour ticket is now closed because of inactivity.\nIf you have anything regarding to that ticket, name the following ID: " + uuid, true, uuid);
                 channel.getManager().setParent(guild.getCategoryById(new Hooks().fromFile("vultronTicketArchiveCategoryID"))).queue();
                 channel.getManager().setName("archived-" + channel.getName() + "_" + uuid).queue();
             }
@@ -88,7 +89,7 @@ public class SupportManager {
             if(!guild.getTextChannelsByName(name, true).isEmpty()) {
                 String uuid = UUID.randomUUID().toString();
                 TextChannel channel = guild.getTextChannelsByName(name, true).get(0);
-                sendMessageToCustomer(channel.getIdLong(), "Thank you for contacting the Vultron Studios support.\nYour ticket is now closed.\nIf you have anything regarding to that ticket, name the following ID: " + uuid);
+                sendMessageToCustomer(channel.getIdLong(), "Thank you for contacting the Vultron Studios support.\nYour ticket is now closed.\nIf you have anything regarding to that ticket, name the following ID: " + uuid, true, uuid);
                 channel.getManager().setParent(guild.getCategoryById(new Hooks().fromFile("vultronTicketArchiveCategoryID"))).queue();
                 channel.getManager().setName("archived-" + channel.getName() + "_" + uuid).queue();
             }
@@ -117,6 +118,30 @@ public class SupportManager {
 
         user.openPrivateChannel().queue(privateChannel -> {
             privateChannel.sendMessageEmbeds(builder.build()).queue();
+        });
+    }
+
+    public void sendMessageToCustomer(long id, String message, boolean feedback, String uuid) {
+        Guild guild = Main.jda.getGuildById(new Hooks().fromFile("vultronGuildID"));
+        assert guild != null;
+        TextChannel channel = guild.getTextChannelById(id);
+        assert channel != null;
+        long u = Long.parseLong(channel.getName().replaceAll("prio-", ""));
+        User user = Main.jda.retrieveUserById(u).complete();
+
+        EmbedBuilder builder = new EmbedBuilder();
+        builder.setColor(Color.cyan);
+        builder.setAuthor("ELIZON.");
+        builder.setThumbnail(new Hooks().fromFile("thumbnailURL"));
+        builder.setTitle("Answer to ticket #" + id);
+        builder.setDescription(message);
+        builder.setFooter("Powered by ClusterNode.net", "https://cdn.clusternode.net/image/s/clusternode_net.png");
+        user.openPrivateChannel().queue(privateChannel -> {
+            if(feedback) {
+                privateChannel.sendMessageEmbeds(builder.build()).addActionRow(Button.primary("feedback_" + uuid, "Feedback")).queue();
+            } else {
+                privateChannel.sendMessageEmbeds(builder.build()).queue();
+            }
         });
     }
 

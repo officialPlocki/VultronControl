@@ -223,7 +223,6 @@ public class RequestServer extends ListenerAdapter {
         if(!Objects.equals(event.getComponent().getId(), "chooseAnswer")) return;
         if(event.getValues().get(0).equals("server_low")) {
             MessageEmbed embed = event.getMessage().getEmbeds().get(0);
-            event.getChannel().sendMessage("Transmitting answer to request " + Objects.requireNonNull(embed.getFooter()).getText() + "...").queue();
             User user = Main.jda.retrieveUserById(Objects.requireNonNull(Objects.requireNonNull(embed.getAuthor()).getName())).complete();
 
             ServerCreationAction action = new Hooks().getPteroApplication().createServer();
@@ -310,7 +309,6 @@ public class RequestServer extends ListenerAdapter {
             event.getMessage().delete().queue();
         } else if(event.getValues().get(0).equals("server_mid")) {
             MessageEmbed embed = event.getMessage().getEmbeds().get(0);
-            event.getChannel().sendMessage("Transmitting answer to request " + Objects.requireNonNull(embed.getFooter()).getText() + "...").queue();
             User user = Main.jda.retrieveUserById(Objects.requireNonNull(Objects.requireNonNull(embed.getAuthor()).getName())).complete();
 
 
@@ -397,7 +395,6 @@ public class RequestServer extends ListenerAdapter {
             event.getMessage().delete().queue();
         } else if(event.getValues().get(0).equals("server_high")) {
             MessageEmbed embed = event.getMessage().getEmbeds().get(0);
-            event.getChannel().sendMessage("Transmitting answer to request " + Objects.requireNonNull(embed.getFooter()).getText() + "...").queue();
             User user = Main.jda.retrieveUserById(Objects.requireNonNull(Objects.requireNonNull(embed.getAuthor()).getName())).complete();
 
 
@@ -487,7 +484,6 @@ public class RequestServer extends ListenerAdapter {
             event.getMessage().delete().queue();
         } else if(event.getValues().get(0).equals("insufficient")) {
             MessageEmbed embed = event.getMessage().getEmbeds().get(0);
-            event.getChannel().sendMessage("Transmitting answer to request " + Objects.requireNonNull(embed.getFooter()).getText() + "...").queue();
             User user = Main.jda.retrieveUserById(Objects.requireNonNull(Objects.requireNonNull(embed.getAuthor()).getName())).complete();
 
 
@@ -517,7 +513,6 @@ public class RequestServer extends ListenerAdapter {
             event.getMessage().delete().queue();
         } else if(event.getValues().get(0).equals("declined")) {
             MessageEmbed embed = event.getMessage().getEmbeds().get(0);
-            event.getChannel().sendMessage("Transmitting answer to request " + Objects.requireNonNull(embed.getFooter()).getText() + "...").queue();
             User user = Main.jda.retrieveUserById(Objects.requireNonNull(Objects.requireNonNull(embed.getAuthor()).getName())).complete();
 
             user.openPrivateChannel().queue(privateChannel -> {
@@ -545,7 +540,6 @@ public class RequestServer extends ListenerAdapter {
             event.getMessage().delete().queue();
         } else if(event.getValues().get(0).equals("amount")) {
             MessageEmbed embed = event.getMessage().getEmbeds().get(0);
-            event.getChannel().sendMessage("Transmitting answer to request " + Objects.requireNonNull(embed.getFooter()).getText() + "...").queue();
             User user = Main.jda.retrieveUserById(Objects.requireNonNull(Objects.requireNonNull(embed.getAuthor()).getName())).complete();
 
             user.openPrivateChannel().queue(privateChannel -> {
@@ -573,7 +567,6 @@ public class RequestServer extends ListenerAdapter {
             event.getMessage().delete().queue();
         } else if(event.getValues().get(0).equals("custom")) {
             MessageEmbed embed = event.getMessage().getEmbeds().get(0);
-            event.getChannel().sendMessage("Transmitting answer to request " + Objects.requireNonNull(embed.getFooter()).getText() + "... (Custom)").queue();
             User user = Main.jda.retrieveUserById(Objects.requireNonNull(Objects.requireNonNull(embed.getAuthor()).getName())).complete();
 
             user.openPrivateChannel().queue(privateChannel -> {
@@ -599,7 +592,6 @@ public class RequestServer extends ListenerAdapter {
             event.getMessage().delete().queue();
         } else if(event.getValues().get(0).equals("subdomain")) {
             MessageEmbed embed = event.getMessage().getEmbeds().get(0);
-            event.getChannel().sendMessage("Transmitting answer to request " + Objects.requireNonNull(embed.getFooter()).getText() + "...").queue();
             User user = Main.jda.retrieveUserById(Objects.requireNonNull(Objects.requireNonNull(embed.getAuthor()).getName())).complete();
 
             user.openPrivateChannel().queue(privateChannel -> {

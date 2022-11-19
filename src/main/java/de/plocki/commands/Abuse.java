@@ -14,7 +14,7 @@ public class Abuse extends ListenerAdapter {
         LanguageUtil util = new LanguageUtil();
         util.setString(
                 "If you find any abusive content, offensive content or anything unappreciative on a server from ELIZON.,\n" +
-                "please send us a mail over abuse@vultronstudios.net or open a ticket over /support and send us the subdomain / address of the server.\n" +
+                "please send us a mail over abuse@elizon.host or open a ticket over /support and send us the subdomain / address of the server.\n" +
                 "We make every effort to remove content of this type as soon as possible.\n" +
                 "As soon as we become aware of something of this nature, we will take care of reviewing the content at the earliest opportunity,\n" +
                 "removing it and taking action such as an account ban or server deletion.\n" +
@@ -23,7 +23,7 @@ public class Abuse extends ListenerAdapter {
                 , "abuse_description", LanguageUtil.lang.EN);
         util.setString(
                 "Wenn du auf einem Server von ELIZON. beleidigende Inhalte, anstößige Inhalte oder irgendetwas Unanerkennendes findest,\n" +
-                        "sendest du uns bitte eine E-Mail an abuse@vultronstudios.net oder öffnest ein Ticket über /support und sendest uns die Subdomain / Adresse des Servers.\n" +
+                        "sendest du uns bitte eine E-Mail an abuse@elizon.host oder öffnest ein Ticket über /support und sendest uns die Subdomain / Adresse des Servers.\n" +
                         "Wir bemühen uns, Inhalte dieser Art zu schnellstmöglich entfernen.\n" +
                         "Sobald uns etwas derartiges bekannt wird, werden wir uns bemühen, die Inhalte so schnell wie möglich zu überprüfen,\n" +
                         "zu entfernen und Maßnahmen wie eine Kontosperre oder Serverlöschung einzuleiten.\n" +

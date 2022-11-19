@@ -1,9 +1,11 @@
 vultronGuildID: '1041803371356631070'
+vultronGuildAdminChannelID: '1043338397080629318'
 vultronGuildChannelID: '1042416393510989854'
 vultronBoosterID: '1042416317858316318'
 vultronBoosterID2: '1042544470123618345'
 vultronTicketCategoryID: '1042453604096802856'
 vultronTicketArchiveCategoryID: '1042453660325654600'
+vultronGuildSupportChannelID: '1043358948281036820'
 panelURL: https://panel.vultronstudios.net
 panelToken: ptla_vNDC1z4XPqbwi9NZAxFz1J05OEI0GRDPvtIi4IL7Jce
 discordBotToken: MTA0MTg5NjQ0Njk4ODkyMjkyMQ.Gz8Efi.mJmUEsETz9biqFXSja1a-WBbLu5jLiLV-IgWgU

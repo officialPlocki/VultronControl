@@ -12,12 +12,12 @@ public class Legal extends ListenerAdapter {
 
     public Legal() {
         LanguageUtil util = new LanguageUtil();
-        util.setString("Special Conditions ELIZON.BOT: https://vultronstudios.net/legal\n" +
-                "Terms of Use (ELIZON. section): https://vultronstudios.net/legal\n" +
+        util.setString("Special Conditions ELIZON.BOT: https://elizon.host/en/specialconditions\n" +
+                "Terms of Use: https://elizon.host/en/tou\n" +
                 "Privacy Policy: https://vultronstudios.net/legal",
                 "legal_inf", LanguageUtil.lang.EN);
-        util.setString("Gesonderte Bedingungen ELIZON.BOT: https://vultronstudios.net/legal\n" +
-                        "Nutzungsbedingungen (ELIZON. Sektion): https://vultronstudios.net/legal\n" +
+        util.setString("Gesonderte Bedingungen ELIZON.BOT: https://elizon.host/de/specialconditions\n" +
+                        "Nutzungsbedingungen: https://elizon.host/de/tou\n" +
                         "Datenschutzerklärung: https://vultronstudios.net/legal",
                 "legal_inf", LanguageUtil.lang.EN);
     }
